@@ -1,0 +1,37 @@
+<div class="custom-grid">
+  {% for block in section.blocks %}
+    {% assign product = block.settings.product %}
+    <div class="custom-grid__item" {{ block.shopify_attributes }}
+         data-product-json='{{ product | json | escape }}'>
+      <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title }}">
+      <p>{{ product.title }}</p>
+      <p>{{ product.price | money }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Custom Grid",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Select product" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Grid",
+      "blocks": [
+        { "type": "product" }, { "type": "product" },
+        { "type": "product" }, { "type": "product" },
+        { "type": "product" }, { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}
