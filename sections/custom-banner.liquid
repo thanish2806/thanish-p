@@ -1,29 +1,101 @@
-<div class="custom-banner">
-  <h1>{{ section.settings.heading }}</h1>
-  <div class="custom-banner__text">{{ section.settings.subtext }}</div>
-  <a href="{{ section.settings.button_link }}" class="custom-banner__btn">
-    {{ section.settings.button_text }}
-  </a>
+<div class="gift-banner">
+  <div class="gift-banner__topbar">
+    <span class="gift-banner__brand">{{ section.settings.brand_name }}</span>
+    <span class="gift-banner__topbar-text">{{ section.settings.topbar_text }}</span>
+    <a href="{{ section.settings.topbar_btn_link }}" class="gift-banner__topbar-btn">
+      {{ section.settings.topbar_btn_text }}
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <div class="gift-banner__hero" style="background-image: url('{{ section.settings.hero_bg | image_url: width: 1600 }}');">
+    <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
+    <div class="gift-banner__subtext">{{ section.settings.subtext }}</div>
+    <a href="{{ section.settings.shop_btn_link }}" class="gift-banner__shop-btn">
+      {{ section.settings.shop_btn_text }}
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <div class="gift-banner__strip">{{ section.settings.strip_text }}</div>
 </div>
 
 {% stylesheet %}
-.custom-banner__btn {
-  transition: transform 0.2s ease, background-color 0.2s ease;
+.gift-banner__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: #f3f3f1;
 }
-.custom-banner__btn:hover {
-  transform: scale(1.05);
+.gift-banner__brand { font-weight: 700; letter-spacing: 2px; }
+.gift-banner__topbar-btn {
+  background: #f5e13c;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+.gift-banner__topbar-btn:hover { background: #e6d32c; }
+
+.gift-banner__hero {
+  background-size: cover;
+  background-position: center;
+  padding: 80px 40px;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.gift-banner__heading { font-size: 48px; margin-bottom: 16px; }
+.gift-banner__subtext { max-width: 380px; margin-bottom: 24px; }
+.gift-banner__shop-btn {
+  background: #000;
+  color: #fff;
+  padding: 14px 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.gift-banner__shop-btn .arrow { transition: transform 0.2s ease; }
+.gift-banner__shop-btn:hover .arrow { transform: translateX(4px); }
+
+.gift-banner__strip {
+  text-align: center;
+  padding: 14px;
+  background: #f3f3f1;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+@media (max-width: 749px) {
+  .gift-banner__topbar { flex-direction: column; gap: 10px; padding: 16px; }
+  .gift-banner__hero { padding: 40px 20px; text-align: center; }
+  .gift-banner__shop-btn { margin: 0 auto; }
 }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Custom Banner",
+  "name": "Gift Banner",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Welcome" },
+    { "type": "text", "id": "brand_name", "label": "Brand name", "default": "TISSO VISON" },
+    { "type": "text", "id": "topbar_text", "label": "Top bar text", "default": "Find the ideal gift for your loved ones." },
+    { "type": "text", "id": "topbar_btn_text", "label": "Top bar button text", "default": "CHOOSE GIFT" },
+    { "type": "url", "id": "topbar_btn_link", "label": "Top bar button link" },
+    { "type": "image_picker", "id": "hero_bg", "label": "Hero background image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Gift Guide" },
     { "type": "richtext", "id": "subtext", "label": "Subtext" },
-    { "type": "text", "id": "button_text", "label": "Button text", "default": "Shop Now" },
-    { "type": "url", "id": "button_link", "label": "Button link" }
+    { "type": "text", "id": "shop_btn_text", "label": "Shop button text", "default": "SHOP NOW" },
+    { "type": "url", "id": "shop_btn_link", "label": "Shop button link" },
+    { "type": "text", "id": "strip_text", "label": "Bottom strip text", "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" }
   ],
-  "presets": [{ "name": "Custom Banner" }]
+  "presets": [{ "name": "Gift Banner" }]
 }
 {% endschema %}

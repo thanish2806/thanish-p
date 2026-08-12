@@ -1,35 +1,109 @@
-<div class="custom-grid">
+<div class="product-grid">
   {% for block in section.blocks %}
     {% assign product = block.settings.product %}
-    <div class="custom-grid__item" {{ block.shopify_attributes }}
-         data-product-json='{{ product | json | escape }}'>
-      <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title }}">
-      <p>{{ product.title }}</p>
-      <p>{{ product.price | money }}</p>
+    <div class="product-grid__item" {{ block.shopify_attributes }}>
+      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" loading="lazy">
+      <button class="product-grid__plus" data-open-popup data-product-handle="{{ product.handle }}">+</button>
     </div>
   {% endfor %}
 </div>
 
+<div class="product-popup" id="product-popup" hidden>
+  <div class="product-popup__overlay" data-close-popup></div>
+  <div class="product-popup__content">
+    <button class="product-popup__close" data-close-popup>×</button>
+    <img class="product-popup__image" src="" alt="">
+    <div class="product-popup__info">
+      <h2 class="product-popup__title"></h2>
+      <p class="product-popup__price"></p>
+      <p class="product-popup__desc"></p>
+
+      <div class="product-popup__colors"></div>
+
+      <label class="product-popup__size-label">Size</label>
+      <select class="product-popup__size"></select>
+
+      <button class="product-popup__add-to-cart">
+        ADD TO CART <span class="arrow">→</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.product-grid__item { position: relative; }
+.product-grid__item img { width: 100%; display: block; }
+.product-grid__plus {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.product-grid__plus:hover { transform: scale(1.1); }
+
+.product-popup { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; }
+.product-popup[hidden] { display: none; }
+.product-popup__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+.product-popup__content {
+  position: relative;
+  background: #fff;
+  display: flex;
+  gap: 32px;
+  padding: 40px;
+  max-width: 700px;
+  width: 90%;
+}
+.product-popup__image { width: 300px; height: 300px; object-fit: cover; }
+.product-popup__close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; }
+.product-popup__colors { display: flex; border: 1px solid #000; margin: 16px 0; }
+.product-popup__colors button {
+  flex: 1; padding: 14px; border: none; background: #fff; cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.product-popup__colors button.active { border-left-color: #1a4fd6; font-weight: 600; }
+.product-popup__size { width: 100%; padding: 14px; margin-bottom: 20px; }
+.product-popup__add-to-cart {
+  width: 100%; background: #000; color: #fff; padding: 16px;
+  border: none; display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; transition: opacity 0.2s ease;
+}
+.product-popup__add-to-cart:hover { opacity: 0.85; }
+
+@media (max-width: 749px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .product-popup__content { flex-direction: column; padding: 24px; }
+  .product-popup__image { width: 100%; height: auto; }
+}
+{% endstylesheet %}
+
 {% schema %}
 {
-  "name": "Custom Grid",
+  "name": "Product Grid",
   "max_blocks": 6,
   "blocks": [
     {
       "type": "product",
       "name": "Product",
-      "settings": [
-        { "type": "product", "id": "product", "label": "Select product" }
-      ]
+      "settings": [{ "type": "product", "id": "product", "label": "Select product" }]
     }
   ],
   "presets": [
     {
-      "name": "Custom Grid",
+      "name": "Product Grid",
       "blocks": [
-        { "type": "product" }, { "type": "product" },
-        { "type": "product" }, { "type": "product" },
-        { "type": "product" }, { "type": "product" }
+        { "type": "product" }, { "type": "product" }, { "type": "product" },
+        { "type": "product" }, { "type": "product" }, { "type": "product" }
       ]
     }
   ]
