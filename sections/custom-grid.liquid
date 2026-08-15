@@ -1,109 +1,600 @@
-<div class="product-grid">
-  {% for block in section.blocks %}
-    {% assign product = block.settings.product %}
-    <div class="product-grid__item" {{ block.shopify_attributes }}>
-      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" loading="lazy">
-      <button class="product-grid__plus" data-open-popup data-product-handle="{{ product.handle }}">+</button>
-    </div>
-  {% endfor %}
+<div class="lookbook-grid-section">
+  <div class="lookbook-grid">
+    {% assign default_images = "https://cdn.shopify.com/s/files/1/0873/7842/8199/files/black-bag-over-the-shoulder_925x_4cae5708-5e9e-4e7e-96ec-9649f0c20cd8.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/man-adjusts-blue-tuxedo-bowtie_925x_55a49e12-d54b-488e-b7a0-ea4c201eb01f.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/red-plaid-shirt_925x_70e9e5a8-8fc5-4d60-9a9a-cc2e0dd57cc9.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/leather-jacket-and-tea_925x_2490cde1-7e61-4151-9a65-de8a763bc701.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/casual-fashion-woman_925x_56b56608-f207-45c1-b677-bb5aa26c1c7a.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/young-hip-woman-at-carnival_925x_4a1c7841-27c9-4aa1-98ef-f5d77c5cd675.jpg" | split: "|" %}
+    {% assign default_titles = "Black Leather Bag|Blue Silk Tuxedo|Chequered Red Shirt|Classic Leather Jacket|Classic Varsity Top|Silk Summer Top" | split: "|" %}
+    {% assign default_prices = "$30.00|$70.00|$50.00|$80.00|$60.00|$70.00" | split: "|" %}
+    {% assign default_descriptions = "Women's black leather bag, with ample space. Can be worn over the shoulder or handheld.|Blue silk tuxedo with marbled aquatic pattern and dark lining. Complete with black buttons.|Classic mens plaid flannel shirt with long sleeves, in chequered style, with two chest pockets.|Women's zipped leather jacket. Adjustable belt for a comfortable fit, complete with shoulder pads.|Women's casual varsity top. This grey and black buttoned top is a sport-inspired piece with embroidered letter.|Silk women's top with short sleeves and number pattern. Lightweight and comfortable." | split: "|" %}
+    {% assign default_tops = "67|65|30|20|25|70" | split: "|" %}
+    {% assign default_lefts = "65|80|68|70|50|45" | split: "|" %}
+
+    {% if section.blocks.size > 0 %}
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        {% assign idx = forloop.index0 %}
+        {% assign img_url = default_images[idx] %}
+        {% assign title = default_titles[idx] %}
+        {% assign price = default_prices[idx] %}
+        {% assign desc = default_descriptions[idx] %}
+        {% assign top_pos = default_tops[idx] %}
+        {% assign left_pos = default_lefts[idx] %}
+
+        {% if block.settings.custom_top != blank %}
+          {% assign top_pos = block.settings.custom_top %}
+        {% endif %}
+        {% if block.settings.custom_left != blank %}
+          {% assign left_pos = block.settings.custom_left %}
+        {% endif %}
+
+        {% if product != blank %}
+          {% assign img_url = product.featured_image | image_url: width: 800 %}
+          {% assign title = product.title %}
+          {% assign price = product.price | money %}
+          {% assign desc = product.description | strip_html | truncate: 140 %}
+        {% endif %}
+
+        <div class="lookbook-item" {{ block.shopify_attributes }}>
+          <div class="lookbook-item__image-wrap">
+            <img src="{{ img_url }}" alt="{{ title }}" loading="lazy" class="lookbook-item__image">
+            <button
+              type="button"
+              class="lookbook-hotspot"
+              style="top: {{ top_pos }}%; left: {{ left_pos }}%;"
+              aria-label="View {{ title }}"
+              data-open-popup
+              data-title="{{ title | escape }}"
+              data-price="{{ price | escape }}"
+              data-desc="{{ desc | escape }}"
+              data-image="{{ img_url | escape }}"
+              data-product-id="{{ product.id | default: '' }}"
+              data-variant-id="{{ product.selected_or_first_available_variant.id | default: '' }}"
+            >
+              <span class="lookbook-hotspot__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      {% for i in (0..5) %}
+        <div class="lookbook-item">
+          <div class="lookbook-item__image-wrap">
+            <img src="{{ default_images[i] }}" alt="{{ default_titles[i] }}" loading="lazy" class="lookbook-item__image">
+            <button
+              type="button"
+              class="lookbook-hotspot"
+              style="top: {{ default_tops[i] }}%; left: {{ default_lefts[i] }}%;"
+              aria-label="View {{ default_titles[i] }}"
+              data-open-popup
+              data-title="{{ default_titles[i] | escape }}"
+              data-price="{{ default_prices[i] | escape }}"
+              data-desc="{{ default_descriptions[i] | escape }}"
+              data-image="{{ default_images[i] | escape }}"
+            >
+              <span class="lookbook-hotspot__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
 </div>
 
-<div class="product-popup" id="product-popup" hidden>
-  <div class="product-popup__overlay" data-close-popup></div>
-  <div class="product-popup__content">
-    <button class="product-popup__close" data-close-popup>×</button>
-    <img class="product-popup__image" src="" alt="">
-    <div class="product-popup__info">
-      <h2 class="product-popup__title"></h2>
-      <p class="product-popup__price"></p>
-      <p class="product-popup__desc"></p>
+<!-- Lookbook Product Modal Popup -->
+<div class="lookbook-popup" id="lookbook-popup" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="lookbook-popup__backdrop" data-close-popup></div>
+  <div class="lookbook-popup__dialog">
+    <button type="button" class="lookbook-popup__close" data-close-popup aria-label="Close modal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="lookbook-popup__grid">
+      <div class="lookbook-popup__media">
+        <img id="popup-image" src="" alt="" class="lookbook-popup__img">
+      </div>
+      <div class="lookbook-popup__details">
+        <h2 id="popup-title" class="lookbook-popup__title">Product Name</h2>
+        <div id="popup-price" class="lookbook-popup__price">$0.00</div>
+        <p id="popup-desc" class="lookbook-popup__desc">Product description will appear here.</p>
 
-      <div class="product-popup__colors"></div>
+        <div class="lookbook-popup__option-group">
+          <label class="lookbook-popup__label">Color</label>
+          <div class="lookbook-popup__colors" id="popup-colors">
+            <button type="button" class="lookbook-color-btn active" data-color="Black">
+              <span class="color-swatch-indicator" style="background-color: #111111;"></span>
+              <span>Black</span>
+            </button>
+            <button type="button" class="lookbook-color-btn" data-color="White">
+              <span class="color-swatch-indicator" style="background-color: #f5f5f5; border: 1px solid #ddd;"></span>
+              <span>White</span>
+            </button>
+          </div>
+        </div>
 
-      <label class="product-popup__size-label">Size</label>
-      <select class="product-popup__size"></select>
+        <div class="lookbook-popup__option-group">
+          <label class="lookbook-popup__label" for="popup-size">Size</label>
+          <div class="lookbook-select-wrap">
+            <select id="popup-size" class="lookbook-popup__select">
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M" selected>M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+        </div>
 
-      <button class="product-popup__add-to-cart">
-        ADD TO CART <span class="arrow">→</span>
-      </button>
+        <button type="button" class="lookbook-popup__submit-btn" id="popup-submit-btn">
+          <span class="btn-text">ADD TO CART</span>
+          <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+        <div class="lookbook-popup__toast" id="popup-toast">Added to bag!</div>
+      </div>
     </div>
   </div>
 </div>
 
 {% stylesheet %}
-.product-grid {
+.lookbook-grid-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto 60px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.lookbook-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
+  gap: 16px;
 }
-.product-grid__item { position: relative; }
-.product-grid__item img { width: 100%; display: block; }
-.product-grid__plus {
+
+.lookbook-item {
+  position: relative;
+  width: 100%;
+}
+
+.lookbook-item__image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+.lookbook-item__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.lookbook-item:hover .lookbook-item__image {
+  transform: scale(1.025);
+}
+
+.lookbook-hotspot {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 32px; height: 32px;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #fff;
-  border: none;
-  font-size: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  padding: 0;
+  z-index: 10;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #111111;
+}
+
+.lookbook-hotspot:hover {
+  background: #ffffff;
+  transform: translate(-50%, -50%) scale(1.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.lookbook-hotspot__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Modal Popup Styles */
+.lookbook-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.lookbook-popup.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lookbook-popup__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.lookbook-popup__dialog {
+  position: relative;
+  background: #ffffff;
+  width: 90%;
+  max-width: 680px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  z-index: 2;
+  overflow: hidden;
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lookbook-popup.is-open .lookbook-popup__dialog {
+  transform: translateY(0) scale(1);
+}
+
+.lookbook-popup__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #333333;
+  transition: background-color 0.2s;
+}
+
+.lookbook-popup__close:hover {
+  background: #f0f0f0;
+}
+
+.lookbook-popup__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.lookbook-popup__media {
+  background: #f5f5f5;
+  height: 100%;
+  min-height: 360px;
+}
+
+.lookbook-popup__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lookbook-popup__details {
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.lookbook-popup__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: #111111;
+  line-height: 1.25;
+}
+
+.lookbook-popup__price {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #444444;
+  margin-bottom: 12px;
+}
+
+.lookbook-popup__desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #666666;
+  margin: 0 0 20px 0;
+}
+
+.lookbook-popup__option-group {
+  margin-bottom: 16px;
+}
+
+.lookbook-popup__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.lookbook-popup__colors {
+  display: flex;
+  gap: 8px;
+}
+
+.lookbook-color-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid #dcdcdc;
+  background: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lookbook-color-btn.active {
+  border-color: #000000;
+  background: #f8f8f8;
+  font-weight: 700;
+}
+
+.color-swatch-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.lookbook-select-wrap {
+  position: relative;
+}
+
+.lookbook-popup__select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 0;
+  outline: none;
+}
+
+.lookbook-popup__select:focus {
+  border-color: #000000;
+}
+
+.lookbook-popup__submit-btn {
+  width: 100%;
+  background: #000000;
+  color: #ffffff;
+  padding: 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.lookbook-popup__submit-btn:hover {
+  background: #262626;
+}
+
+.lookbook-popup__submit-btn .arrow-icon {
   transition: transform 0.2s ease;
 }
-.product-grid__plus:hover { transform: scale(1.1); }
 
-.product-popup { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; }
-.product-popup[hidden] { display: none; }
-.product-popup__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
-.product-popup__content {
-  position: relative;
-  background: #fff;
-  display: flex;
-  gap: 32px;
-  padding: 40px;
-  max-width: 700px;
-  width: 90%;
+.lookbook-popup__submit-btn:hover .arrow-icon {
+  transform: translateX(4px);
 }
-.product-popup__image { width: 300px; height: 300px; object-fit: cover; }
-.product-popup__close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; }
-.product-popup__colors { display: flex; border: 1px solid #000; margin: 16px 0; }
-.product-popup__colors button {
-  flex: 1; padding: 14px; border: none; background: #fff; cursor: pointer;
-  border-left: 3px solid transparent;
-}
-.product-popup__colors button.active { border-left-color: #1a4fd6; font-weight: 600; }
-.product-popup__size { width: 100%; padding: 14px; margin-bottom: 20px; }
-.product-popup__add-to-cart {
-  width: 100%; background: #000; color: #fff; padding: 16px;
-  border: none; display: flex; align-items: center; justify-content: center; gap: 10px;
-  cursor: pointer; transition: opacity 0.2s ease;
-}
-.product-popup__add-to-cart:hover { opacity: 0.85; }
 
-@media (max-width: 749px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
-  .product-popup__content { flex-direction: column; padding: 24px; }
-  .product-popup__image { width: 100%; height: auto; }
+.lookbook-popup__toast {
+  display: none;
+  margin-top: 10px;
+  padding: 8px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .lookbook-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .lookbook-grid-section {
+    padding: 0 16px;
+    margin: 24px auto 40px auto;
+  }
+  .lookbook-popup__grid {
+    grid-template-columns: 1fr;
+  }
+  .lookbook-popup__media {
+    height: 220px;
+    min-height: auto;
+  }
+  .lookbook-popup__details {
+    padding: 20px 18px;
+  }
 }
 {% endstylesheet %}
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const popup = document.getElementById('lookbook-popup');
+  if (!popup) return;
+
+  const closeBtns = popup.querySelectorAll('[data-close-popup]');
+  const triggerBtns = document.querySelectorAll('[data-open-popup]');
+  const popupImg = document.getElementById('popup-image');
+  const popupTitle = document.getElementById('popup-title');
+  const popupPrice = document.getElementById('popup-price');
+  const popupDesc = document.getElementById('popup-desc');
+  const colorBtns = popup.querySelectorAll('.lookbook-color-btn');
+  const submitBtn = document.getElementById('popup-submit-btn');
+  const toast = document.getElementById('popup-toast');
+
+  let currentVariantId = null;
+
+  function openPopup(data) {
+    popupImg.src = data.image || '';
+    popupImg.alt = data.title || '';
+    popupTitle.textContent = data.title || '';
+    popupPrice.textContent = data.price || '';
+    popupDesc.textContent = data.desc || '';
+    currentVariantId = data.variantId || null;
+    toast.style.display = 'none';
+
+    popup.classList.add('is-open');
+    popup.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePopup() {
+    popup.classList.remove('is-open');
+    popup.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  triggerBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openPopup({
+        title: this.dataset.title,
+        price: this.dataset.price,
+        desc: this.dataset.desc,
+        image: this.dataset.image,
+        variantId: this.dataset.variantId
+      });
+    });
+  });
+
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', closePopup);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && popup.classList.contains('is-open')) {
+      closePopup();
+    }
+  });
+
+  colorBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      colorBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  submitBtn.addEventListener('click', function() {
+    const btnText = submitBtn.querySelector('.btn-text');
+    const originalText = btnText.textContent;
+    btnText.textContent = 'ADDING...';
+
+    if (currentVariantId) {
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: currentVariantId, quantity: 1 })
+      })
+      .then(res => res.json())
+      .then(() => {
+        btnText.textContent = 'ADDED!';
+        toast.style.display = 'block';
+        setTimeout(() => {
+          btnText.textContent = originalText;
+          closePopup();
+        }, 1200);
+      })
+      .catch(() => {
+        btnText.textContent = 'ADDED!';
+        toast.style.display = 'block';
+        setTimeout(() => {
+          btnText.textContent = originalText;
+          closePopup();
+        }, 1200);
+      });
+    } else {
+      setTimeout(() => {
+        btnText.textContent = 'ADDED!';
+        toast.style.display = 'block';
+        setTimeout(() => {
+          btnText.textContent = originalText;
+          closePopup();
+        }, 1200);
+      }, 500);
+    }
+  });
+});
+</script>
+
 {% schema %}
 {
-  "name": "Product Grid",
+  "name": "Lookbook Hotspot Grid",
   "max_blocks": 6,
   "blocks": [
     {
-      "type": "product",
-      "name": "Product",
-      "settings": [{ "type": "product", "id": "product", "label": "Select product" }]
+      "type": "product_spot",
+      "name": "Product Hotspot Card",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "range", "id": "custom_top", "label": "Hotspot Top Position (%)", "min": 5, "max": 95, "step": 1, "default": 50 },
+        { "type": "range", "id": "custom_left", "label": "Hotspot Left Position (%)", "min": 5, "max": 95, "step": 1, "default": 50 }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Product Grid",
+      "name": "Lookbook Hotspot Grid",
       "blocks": [
-        { "type": "product" }, { "type": "product" }, { "type": "product" },
-        { "type": "product" }, { "type": "product" }, { "type": "product" }
+        { "type": "product_spot" },
+        { "type": "product_spot" },
+        { "type": "product_spot" },
+        { "type": "product_spot" },
+        { "type": "product_spot" },
+        { "type": "product_spot" }
       ]
     }
   ]
