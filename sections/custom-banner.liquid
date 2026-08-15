@@ -2,6 +2,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+{% liquid
+  assign hero_bg_url = 'hero-bg.png' | asset_url
+  if section.settings.hero_bg != blank
+    assign hero_bg_url = section.settings.hero_bg | image_url: width: 3840
+  endif
+%}
+
 <div class="tisso-banner-wrapper">
   <!-- Top Navigation / Announcement Bar -->
   <header class="tisso-topbar">
@@ -18,10 +25,14 @@
     </div>
   </header>
 
-  <!-- Hero Section with Frame.png Background -->
-  <section class="tisso-hero" style="background-image: url('{% if section.settings.hero_bg != blank %}{{ section.settings.hero_bg | image_url: width: 2000 }}{% else %}{{ 'Frame.png' | asset_url }}{% endif %}');">
+  <!-- Hero Section with New Frame 1957 Background -->
+  <section class="tisso-hero" style="background-image: url('{{ hero_bg_url }}');">
+    <div class="tisso-hero__bg-wrap" aria-hidden="true">
+      <img src="{{ hero_bg_url }}" alt="Gift Guide Hero Background" class="tisso-hero__img" loading="eager">
+    </div>
+
     <div class="tisso-hero__container">
-      <div class="tisso-hero__card">
+      <div class="tisso-hero__content">
         <h1 class="tisso-hero__title">{{ section.settings.heading | default: 'The Gift Guide' }}</h1>
         <div class="tisso-hero__description">
           {% if section.settings.subtext != blank %}
@@ -53,6 +64,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #000000;
   -webkit-font-smoothing: antialiased;
+  position: relative;
 }
 
 /* Header Top Bar */
@@ -65,6 +77,8 @@
   border-bottom: 1px solid #ebebeb;
   box-sizing: border-box;
   min-height: 52px;
+  position: relative;
+  z-index: 10;
 }
 
 .tisso-topbar__brand {
@@ -120,39 +134,56 @@
 .tisso-hero {
   position: relative;
   width: 100%;
-  min-height: 440px;
+  min-height: 520px;
   background-color: #ffffff;
-  background-repeat: repeat;
-  background-position: left top;
-  background-size: 850px auto;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   box-sizing: border-box;
   border-bottom: 1px solid #eaeaea;
+  overflow: hidden;
+}
+
+/* Layered Image for 100% guarantee of rendering */
+.tisso-hero__bg-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.tisso-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .tisso-hero__container {
   width: 100%;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 60px 48px;
+  padding: 80px 48px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
-.tisso-hero__card {
+.tisso-hero__content {
   max-width: 440px;
-  background: rgba(255, 255, 255, 0.94);
-  padding: 32px 36px 36px 36px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: transparent;
+  padding: 0;
 }
 
 .tisso-hero__title {
   font-family: 'Inter', sans-serif;
-  font-size: 3.2rem;
+  font-size: 3.3rem;
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.03em;
@@ -206,6 +237,8 @@
   padding: 11px 24px;
   text-align: center;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
 .tisso-strip__text {
@@ -231,18 +264,16 @@
     justify-content: center;
   }
   .tisso-hero {
-    min-height: 380px;
-    background-size: 600px auto;
+    min-height: 400px;
   }
   .tisso-hero__container {
-    padding: 36px 20px;
+    padding: 40px 20px;
   }
-  .tisso-hero__card {
+  .tisso-hero__content {
     max-width: 100%;
-    padding: 24px 20px;
   }
   .tisso-hero__title {
-    font-size: 2.3rem;
+    font-size: 2.4rem;
   }
 }
 {% endstylesheet %}
@@ -255,7 +286,7 @@
     { "type": "text", "id": "topbar_text", "label": "Top Bar Text", "default": "Find the ideal gift for your loved ones." },
     { "type": "text", "id": "topbar_btn_text", "label": "Top Bar Button Text", "default": "CHOOSE GIFT" },
     { "type": "url", "id": "topbar_btn_link", "label": "Top Bar Button Link" },
-    { "type": "image_picker", "id": "hero_bg", "label": "Hero Background Image (defaults to Frame.png)" },
+    { "type": "image_picker", "id": "hero_bg", "label": "Hero Background Image" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "The Gift Guide" },
     { "type": "richtext", "id": "subtext", "label": "Subtext" },
     { "type": "text", "id": "shop_btn_text", "label": "Shop Button Text", "default": "SHOP NOW" },

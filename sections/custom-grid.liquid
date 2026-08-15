@@ -57,6 +57,7 @@
                 data-color2="{{ c2 | escape }}"
                 data-product-id="{{ product.id | default: '' }}"
                 data-variant-id="{{ product.selected_or_first_available_variant.id | default: '' }}"
+                onclick="window.openTissoModal(this)"
               >
                 <span class="tisso-pin__plus">+</span>
               </button>
@@ -85,6 +86,7 @@
                 data-image="{{ default_images[i] | escape }}"
                 data-color1="{{ default_color1[i] | escape }}"
                 data-color2="{{ default_color2[i] | escape }}"
+                onclick="window.openTissoModal(this)"
               >
                 <span class="tisso-pin__plus">+</span>
               </button>
@@ -101,12 +103,12 @@
   </div>
 </div>
 
-<!-- Lookbook Product Quick View Modal Exact Match -->
+<!-- Lookbook Product Quick View Modal -->
 <div class="lookbook-popup" id="lookbook-popup" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="lookbook-popup__backdrop" data-close-popup></div>
+  <div class="lookbook-popup__backdrop" data-close-popup onclick="window.closeTissoModal()"></div>
   <div class="lookbook-popup__dialog">
-    <button type="button" class="lookbook-popup__close" data-close-popup aria-label="Close modal">
-      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <button type="button" class="lookbook-popup__close" data-close-popup onclick="window.closeTissoModal()" aria-label="Close modal">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <line x1="1" y1="1" x2="13" y2="13"></line>
         <line x1="13" y1="1" x2="1" y2="13"></line>
       </svg>
@@ -127,12 +129,10 @@
       <div class="lookbook-popup__field">
         <label class="lookbook-popup__label">Color</label>
         <div class="lookbook-popup__color-bar" id="popup-color-bar">
-          <button type="button" class="lookbook-color-tab active" id="color-tab-1">
-            <span class="tab-indicator"></span>
+          <button type="button" class="lookbook-color-tab active" id="color-tab-1" onclick="window.selectTissoColor(this)">
             <span class="tab-text" id="color-text-1">Blue</span>
           </button>
-          <button type="button" class="lookbook-color-tab" id="color-tab-2">
-            <span class="tab-indicator"></span>
+          <button type="button" class="lookbook-color-tab" id="color-tab-2" onclick="window.selectTissoColor(this)">
             <span class="tab-text" id="color-text-2">Black</span>
           </button>
         </div>
@@ -157,7 +157,7 @@
         </div>
       </div>
 
-      <button type="button" class="lookbook-popup__submit-btn" id="popup-submit-btn">
+      <button type="button" class="lookbook-popup__submit-btn" id="popup-submit-btn" onclick="window.submitTissoCart()">
         <span class="btn-text">ADD TO CART</span>
         <svg class="arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -175,6 +175,7 @@
   padding: 60px 0 80px 0;
   background-color: #ffffff;
   box-sizing: border-box;
+  position: relative;
 }
 
 .tisso-lookbook-container {
@@ -244,10 +245,11 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  z-index: 10;
+  z-index: 25;
   transition: all 0.2s ease;
   color: #000000;
   outline: none;
+  pointer-events: auto;
 }
 
 .tisso-pin:hover {
@@ -274,24 +276,27 @@
   background: rgba(255, 255, 255, 0.7);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   pointer-events: none;
+  z-index: 10;
 }
 
-/* Modal Popup Exact Styles */
+/* Modal Popup Styles */
 .lookbook-popup {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
   transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .lookbook-popup.is-open {
-  opacity: 1;
-  visibility: visible;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
 }
 
 .lookbook-popup__backdrop {
@@ -300,6 +305,7 @@
   background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+  cursor: pointer;
 }
 
 .lookbook-popup__dialog {
@@ -438,12 +444,12 @@
 }
 
 .lookbook-color-tab.active {
-  border-left: 3.5px solid #0033cc;
+  border-left: 3.5px solid #0033cc !important;
   font-weight: 500;
 }
 
 .lookbook-color-tab:not(:first-child).active {
-  border-left: 3.5px solid #0033cc;
+  border-left: 3.5px solid #0033cc !important;
 }
 
 /* Select Size Box with right border partition */
@@ -544,123 +550,115 @@
 {% endstylesheet %}
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+window.openTissoModal = function(btn) {
   const popup = document.getElementById('lookbook-popup');
-  if (!popup) return;
+  if (!popup || !btn) return;
 
-  const closeBtns = popup.querySelectorAll('[data-close-popup]');
-  const triggerBtns = document.querySelectorAll('[data-open-popup]');
   const popupImg = document.getElementById('popup-image');
   const popupTitle = document.getElementById('popup-title');
   const popupPrice = document.getElementById('popup-price');
   const popupDesc = document.getElementById('popup-desc');
-  const colorTab1 = document.getElementById('color-tab-1');
-  const colorTab2 = document.getElementById('color-tab-2');
   const colorText1 = document.getElementById('color-text-1');
   const colorText2 = document.getElementById('color-text-2');
-  const submitBtn = document.getElementById('popup-submit-btn');
+  const colorTab1 = document.getElementById('color-tab-1');
+  const colorTab2 = document.getElementById('color-tab-2');
   const toast = document.getElementById('popup-toast');
 
-  let currentVariantId = null;
+  if (popupImg) {
+    popupImg.src = btn.getAttribute('data-image') || '';
+    popupImg.alt = btn.getAttribute('data-title') || '';
+  }
+  if (popupTitle) popupTitle.textContent = btn.getAttribute('data-title') || 'Tailored Jacket';
+  if (popupPrice) popupPrice.textContent = btn.getAttribute('data-price') || '980,00€';
+  if (popupDesc) popupDesc.textContent = btn.getAttribute('data-desc') || '';
+  if (colorText1) colorText1.textContent = btn.getAttribute('data-color1') || 'Blue';
+  if (colorText2) colorText2.textContent = btn.getAttribute('data-color2') || 'Black';
+  if (toast) toast.style.display = 'none';
 
-  function openPopup(data) {
-    popupImg.src = data.image || '';
-    popupImg.alt = data.title || '';
-    popupTitle.textContent = data.title || '';
-    popupPrice.textContent = data.price || '';
-    popupDesc.textContent = data.desc || '';
-    colorText1.textContent = data.color1 || 'Blue';
-    colorText2.textContent = data.color2 || 'Black';
-    currentVariantId = data.variantId || null;
-    toast.style.display = 'none';
-
-    // reset tabs
+  if (colorTab1 && colorTab2) {
     colorTab1.classList.add('active');
     colorTab2.classList.remove('active');
-
-    popup.classList.add('is-open');
-    popup.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
   }
 
-  function closePopup() {
-    popup.classList.remove('is-open');
-    popup.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
+  window.currentTissoVariantId = btn.getAttribute('data-variant-id') || null;
 
-  triggerBtns.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      openPopup({
-        title: this.dataset.title,
-        price: this.dataset.price,
-        desc: this.dataset.desc,
-        image: this.dataset.image,
-        color1: this.dataset.color1,
-        color2: this.dataset.color2,
-        variantId: this.dataset.variantId
-      });
-    });
-  });
+  popup.classList.add('is-open');
+  popup.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+};
 
-  closeBtns.forEach(btn => {
-    btn.addEventListener('click', closePopup);
-  });
+window.closeTissoModal = function() {
+  const popup = document.getElementById('lookbook-popup');
+  if (!popup) return;
+  popup.classList.remove('is-open');
+  popup.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+};
 
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && popup.classList.contains('is-open')) {
-      closePopup();
-    }
-  });
+window.selectTissoColor = function(tab) {
+  const parent = tab.closest('.lookbook-popup__color-bar');
+  if (!parent) return;
+  parent.querySelectorAll('.lookbook-color-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+};
 
-  [colorTab1, colorTab2].forEach(tab => {
-    if (!tab) return;
-    tab.addEventListener('click', function() {
-      [colorTab1, colorTab2].forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
+window.submitTissoCart = function() {
+  const submitBtn = document.getElementById('popup-submit-btn');
+  const toast = document.getElementById('popup-toast');
+  const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+  const originalText = btnText ? btnText.textContent : 'ADD TO CART';
 
-  submitBtn.addEventListener('click', function() {
-    const btnText = submitBtn.querySelector('.btn-text');
-    const originalText = btnText.textContent;
-    btnText.textContent = 'ADDING...';
+  if (btnText) btnText.textContent = 'ADDING...';
 
-    if (currentVariantId) {
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: currentVariantId, quantity: 1 })
-      })
-      .then(res => res.json())
-      .then(() => {
-        btnText.textContent = 'ADDED!';
-        toast.style.display = 'block';
-        setTimeout(() => {
-          btnText.textContent = originalText;
-          closePopup();
-        }, 1200);
-      })
-      .catch(() => {
-        btnText.textContent = 'ADDED!';
-        toast.style.display = 'block';
-        setTimeout(() => {
-          btnText.textContent = originalText;
-          closePopup();
-        }, 1200);
-      });
-    } else {
+  if (window.currentTissoVariantId) {
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: window.currentTissoVariantId, quantity: 1 })
+    })
+    .then(r => r.json())
+    .then(() => {
+      if (btnText) btnText.textContent = 'ADDED!';
+      if (toast) toast.style.display = 'block';
       setTimeout(() => {
-        btnText.textContent = 'ADDED!';
-        toast.style.display = 'block';
-        setTimeout(() => {
-          btnText.textContent = originalText;
-          closePopup();
-        }, 1200);
-      }, 500);
-    }
-  });
+        if (btnText) btnText.textContent = originalText;
+        window.closeTissoModal();
+      }, 1000);
+    })
+    .catch(() => {
+      if (btnText) btnText.textContent = 'ADDED!';
+      if (toast) toast.style.display = 'block';
+      setTimeout(() => {
+        if (btnText) btnText.textContent = originalText;
+        window.closeTissoModal();
+      }, 1000);
+    });
+  } else {
+    setTimeout(() => {
+      if (btnText) btnText.textContent = 'ADDED!';
+      if (toast) toast.style.display = 'block';
+      setTimeout(() => {
+        if (btnText) btnText.textContent = originalText;
+        window.closeTissoModal();
+      }, 1000);
+    }, 400);
+  }
+};
+
+// Global fallback listener so click is guaranteed even if dynamic
+document.addEventListener('click', function(e) {
+  const pin = e.target.closest('[data-open-popup]');
+  if (pin) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.openTissoModal(pin);
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    window.closeTissoModal();
+  }
 });
 </script>
 
