@@ -20,43 +20,43 @@
         "spot_1": {
           "type": "product_spot",
           "settings": {
-            "custom_top": 67,
-            "custom_left": 65
+            "custom_top": 64,
+            "custom_left": 69
           }
         },
         "spot_2": {
           "type": "product_spot",
           "settings": {
-            "custom_top": 65,
-            "custom_left": 80
+            "custom_top": 63.5,
+            "custom_left": 81
           }
         },
         "spot_3": {
           "type": "product_spot",
           "settings": {
-            "custom_top": 30,
-            "custom_left": 68
+            "custom_top": 27,
+            "custom_left": 71
           }
         },
         "spot_4": {
           "type": "product_spot",
           "settings": {
-            "custom_top": 20,
-            "custom_left": 70
+            "custom_top": 39,
+            "custom_left": 76
           }
         },
         "spot_5": {
           "type": "product_spot",
           "settings": {
-            "custom_top": 25,
-            "custom_left": 50
+            "custom_top": 41,
+            "custom_left": 51
           }
         },
         "spot_6": {
           "type": "product_spot",
           "settings": {
-            "custom_top": 70,
-            "custom_left": 45
+            "custom_top": 67.5,
+            "custom_left": 79
           }
         }
       },
@@ -68,7 +68,9 @@
         "spot_5",
         "spot_6"
       ],
-      "settings": {}
+      "settings": {
+        "title": "Tisso vison in the wild"
+      }
     }
   },
   "order": [

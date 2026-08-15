@@ -1,196 +1,247 @@
-<div class="gift-banner">
-  <div class="gift-banner__topbar">
-    <span class="gift-banner__brand">{{ section.settings.brand_name }}</span>
-    <span class="gift-banner__topbar-text">{{ section.settings.topbar_text }}</span>
-    <a href="{{ section.settings.topbar_btn_link | default: '/collections/all' }}" class="gift-banner__topbar-btn">
-      <span>{{ section.settings.topbar_btn_text }}</span>
-      <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-        <polyline points="12 5 19 12 12 19"></polyline>
-      </svg>
-    </a>
-  </div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <div class="gift-banner__hero" style="background-image: url('{% if section.settings.hero_bg != blank %}{{ section.settings.hero_bg | image_url: width: 1800 }}{% else %}{{ 'Frame.png' | asset_url }}{% endif %}');">
-    <div class="gift-banner__content">
-      <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
-      <div class="gift-banner__subtext">
-        {% if section.settings.subtext != blank %}
-          {{ section.settings.subtext }}
-        {% else %}
-          <p>Discover Joy: Your Ultimate Holiday Gift Destination.<br>Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>
-        {% endif %}
-      </div>
-      <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="gift-banner__shop-btn">
-        <span>{{ section.settings.shop_btn_text }}</span>
-        <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<div class="tisso-banner-wrapper">
+  <!-- Top Navigation / Announcement Bar -->
+  <header class="tisso-topbar">
+    <div class="tisso-topbar__brand">{{ section.settings.brand_name | default: 'TISSO VISON' }}</div>
+    <div class="tisso-topbar__announcement">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</div>
+    <div class="tisso-topbar__action">
+      <a href="{{ section.settings.topbar_btn_link | default: '/collections/all' }}" class="tisso-btn-yellow">
+        <span>{{ section.settings.topbar_btn_text | default: 'CHOOSE GIFT' }}</span>
+        <svg class="tisso-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
       </a>
     </div>
-  </div>
+  </header>
 
-  <div class="gift-banner__strip">
-    <span>{{ section.settings.strip_text }}</span>
+  <!-- Hero Section with Frame.png Background -->
+  <section class="tisso-hero" style="background-image: url('{% if section.settings.hero_bg != blank %}{{ section.settings.hero_bg | image_url: width: 2000 }}{% else %}{{ 'Frame.png' | asset_url }}{% endif %}');">
+    <div class="tisso-hero__container">
+      <div class="tisso-hero__card">
+        <h1 class="tisso-hero__title">{{ section.settings.heading | default: 'The Gift Guide' }}</h1>
+        <div class="tisso-hero__description">
+          {% if section.settings.subtext != blank %}
+            {{ section.settings.subtext }}
+          {% else %}
+            <p>Discover Joy: Your Ultimate Holiday Gift Destination.<br>Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>
+          {% endif %}
+        </div>
+        <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="tisso-btn-black">
+          <span>{{ section.settings.shop_btn_text | default: 'SHOP NOW' }}</span>
+          <svg class="tisso-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sub-Hero Strip Banner -->
+  <div class="tisso-strip">
+    <div class="tisso-strip__text">{{ section.settings.strip_text | default: 'SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL' }}</div>
   </div>
 </div>
 
 {% stylesheet %}
-.gift-banner {
+.tisso-banner-wrapper {
   width: 100%;
-  font-family: inherit;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #000000;
+  -webkit-font-smoothing: antialiased;
 }
 
-.gift-banner__topbar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+/* Header Top Bar */
+.tisso-topbar {
+  display: flex;
   align-items: center;
-  padding: 12px 40px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
+  justify-content: space-between;
+  padding: 10px 48px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ebebeb;
   box-sizing: border-box;
+  min-height: 52px;
 }
 
-.gift-banner__brand {
-  font-weight: 800;
+.tisso-topbar__brand {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 1.15rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   color: #000000;
   text-transform: uppercase;
-  justify-self: start;
+  flex: 1;
 }
 
-.gift-banner__topbar-text {
+.tisso-topbar__announcement {
   font-size: 0.85rem;
-  color: #111111;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  color: #222222;
   text-align: center;
-  justify-self: center;
+  flex: 2;
+  letter-spacing: -0.01em;
 }
 
-.gift-banner__topbar-btn {
-  background: #faea38;
+.tisso-topbar__action {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tisso-btn-yellow {
+  background-color: #f7e627;
   color: #000000;
-  padding: 8px 18px;
-  font-size: 0.8rem;
+  padding: 8px 20px;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  justify-self: end;
+  gap: 10px;
   border: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.gift-banner__topbar-btn:hover {
-  background: #f0de24;
-  transform: translateY(-1px);
+.tisso-btn-yellow:hover {
+  background-color: #eedc18;
 }
 
-.gift-banner__hero {
+.tisso-btn-yellow:hover .tisso-arrow {
+  transform: translateX(3px);
+}
+
+/* Hero Section */
+.tisso-hero {
   position: relative;
+  width: 100%;
+  min-height: 440px;
   background-color: #ffffff;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: right center;
-  min-height: 480px;
+  background-repeat: repeat;
+  background-position: left top;
+  background-size: 850px auto;
   display: flex;
   align-items: center;
-  padding: 60px 80px;
   box-sizing: border-box;
+  border-bottom: 1px solid #eaeaea;
 }
 
-.gift-banner__content {
-  max-width: 480px;
-  z-index: 2;
+.tisso-hero__container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 60px 48px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
 }
 
-.gift-banner__heading {
-  font-size: 3.25rem;
-  font-weight: 800;
-  line-height: 1.1;
+.tisso-hero__card {
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 32px 36px 36px 36px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.tisso-hero__title {
+  font-family: 'Inter', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   color: #000000;
-  margin: 0 0 20px 0;
-  letter-spacing: -0.02em;
+  margin: 0 0 18px 0;
 }
 
-.gift-banner__subtext {
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: #333333;
-  margin-bottom: 28px;
+.tisso-hero__description {
+  font-size: 0.9rem;
+  line-height: 1.48;
+  color: #222222;
+  margin-bottom: 26px;
 }
 
-.gift-banner__subtext p {
+.tisso-hero__description p {
   margin: 0;
 }
 
-.gift-banner__shop-btn {
-  background: #000000;
+.tisso-btn-black {
+  background-color: #000000;
   color: #ffffff;
-  padding: 13px 26px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  border-radius: 0px;
-  transition: all 0.2s ease;
-}
-
-.gift-banner__shop-btn:hover {
-  background: #222222;
-}
-
-.gift-banner__shop-btn .arrow-icon,
-.gift-banner__topbar-btn .arrow-icon {
-  transition: transform 0.2s ease;
-}
-
-.gift-banner__shop-btn:hover .arrow-icon,
-.gift-banner__topbar-btn:hover .arrow-icon {
-  transform: translateX(4px);
-}
-
-.gift-banner__strip {
-  background: #f1f1f1;
-  text-align: center;
-  padding: 14px 20px;
+  padding: 12px 28px;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tisso-btn-black:hover {
+  background-color: #222222;
+}
+
+.tisso-btn-black:hover .tisso-arrow {
+  transform: translateX(4px);
+}
+
+.tisso-arrow {
+  transition: transform 0.2s ease;
+}
+
+/* Strip Banner */
+.tisso-strip {
+  width: 100%;
+  background-color: #eeeeee;
+  padding: 11px 24px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.tisso-strip__text {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: #222222;
   text-transform: uppercase;
-  border-top: 1px solid #e8e8e8;
-  border-bottom: 1px solid #e8e8e8;
 }
 
 @media (max-width: 900px) {
-  .gift-banner__topbar {
-    grid-template-columns: 1fr;
+  .tisso-topbar {
+    flex-direction: column;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 14px 20px;
     text-align: center;
   }
-  .gift-banner__brand,
-  .gift-banner__topbar-text,
-  .gift-banner__topbar-btn {
-    justify-self: center;
+  .tisso-topbar__brand,
+  .tisso-topbar__announcement,
+  .tisso-topbar__action {
+    flex: none;
+    width: 100%;
+    justify-content: center;
   }
-  .gift-banner__hero {
-    padding: 40px 24px;
-    background-size: cover;
-    background-position: center;
+  .tisso-hero {
     min-height: 380px;
+    background-size: 600px auto;
   }
-  .gift-banner__heading {
+  .tisso-hero__container {
+    padding: 36px 20px;
+  }
+  .tisso-hero__card {
+    max-width: 100%;
+    padding: 24px 20px;
+  }
+  .tisso-hero__title {
     font-size: 2.3rem;
   }
 }
@@ -198,19 +249,19 @@
 
 {% schema %}
 {
-  "name": "Gift Banner",
+  "name": "Tisso Gift Banner",
   "settings": [
-    { "type": "text", "id": "brand_name", "label": "Brand name", "default": "TISSO VISON" },
-    { "type": "text", "id": "topbar_text", "label": "Top bar text", "default": "Find the ideal gift for your loved ones." },
-    { "type": "text", "id": "topbar_btn_text", "label": "Top bar button text", "default": "CHOOSE GIFT" },
-    { "type": "url", "id": "topbar_btn_link", "label": "Top bar button link" },
-    { "type": "image_picker", "id": "hero_bg", "label": "Hero background image (defaults to Frame.png)" },
+    { "type": "text", "id": "brand_name", "label": "Brand Name", "default": "TISSO VISON" },
+    { "type": "text", "id": "topbar_text", "label": "Top Bar Text", "default": "Find the ideal gift for your loved ones." },
+    { "type": "text", "id": "topbar_btn_text", "label": "Top Bar Button Text", "default": "CHOOSE GIFT" },
+    { "type": "url", "id": "topbar_btn_link", "label": "Top Bar Button Link" },
+    { "type": "image_picker", "id": "hero_bg", "label": "Hero Background Image (defaults to Frame.png)" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "The Gift Guide" },
     { "type": "richtext", "id": "subtext", "label": "Subtext" },
-    { "type": "text", "id": "shop_btn_text", "label": "Shop button text", "default": "SHOP NOW" },
-    { "type": "url", "id": "shop_btn_link", "label": "Shop button link" },
-    { "type": "text", "id": "strip_text", "label": "Bottom strip text", "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" }
+    { "type": "text", "id": "shop_btn_text", "label": "Shop Button Text", "default": "SHOP NOW" },
+    { "type": "url", "id": "shop_btn_link", "label": "Shop Button Link" },
+    { "type": "text", "id": "strip_text", "label": "Bottom Strip Text", "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" }
   ],
-  "presets": [{ "name": "Gift Banner" }]
+  "presets": [{ "name": "Tisso Gift Banner" }]
 }
 {% endschema %}
