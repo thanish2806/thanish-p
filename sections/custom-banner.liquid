@@ -1,43 +1,4 @@
-<div class="gift-banner" style="background-image: url('{% if section.settings.hero_bg != blank %}{{ section.settings.hero_bg | image_url: width: 1600 }}{% else %}{{ 'hero-bg.png' | asset_url }}{% endif %}');">
-  <div class="gift-banner__topbar">
-    <div class="gift-banner__brand">
-      {% if section.settings.custom_logo != blank %}
-        <img
-          src="{{ section.settings.custom_logo | image_url: width: 300 }}"
-          alt="{{ section.settings.custom_logo.alt | default: 'TISSO VISON' }}"
-          class="gift-banner__logo"
-          loading="eager"
-        >
-      {% else %}
-        <span>{{ section.settings.brand_name | default: 'TISSO VISON' }}</span>
-      {% endif %}
-    </div>
-    <span class="gift-banner__topbar-text">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</span>
-    <a href="{{ section.settings.topbar_btn_link | default: '/collections/all' }}" class="gift-banner__topbar-btn">
-      {{ section.settings.topbar_btn_text | default: 'CHOOSE GIFT' }}
-      <span class="arrow">→</span>
-    </a>
-  </div>
-
-  <div class="gift-banner__hero">
-    <h1 class="gift-banner__heading">{{ section.settings.heading | default: 'The Gift Guide' }}</h1>
-    <div class="gift-banner__subtext">
-      {% if section.settings.subtext != blank %}
-        {{ section.settings.subtext }}
-      {% else %}
-        <p>Discover Joy: Your Ultimate Holiday Gift Destination.<br>Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>
-      {% endif %}
-    </div>
-    <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="gift-banner__shop-btn">
-      {{ section.settings.shop_btn_text | default: 'SHOP NOW' }}
-      <span class="arrow">→</span>
-    </a>
-  </div>
-
-  <div class="gift-banner__strip">{{ section.settings.strip_text | default: 'SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL' }}</div>
-</div>
-
-{% stylesheet %}
+<style>
 .gift-banner {
   width: 100%;
   min-height: 878px;
@@ -84,10 +45,10 @@
 
 .gift-banner__topbar-btn {
   position: relative;
-  background: #f5e13c;
+  background-color: #f5e13c !important;
   padding: 10px 20px;
   text-decoration: none;
-  color: #000000;
+  color: #000000 !important;
   font-weight: 600;
   font-size: 14px;
   display: inline-flex;
@@ -96,6 +57,7 @@
   overflow: hidden;
   z-index: 1;
   border: 1px solid #f5e13c;
+  cursor: pointer;
   transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.35s ease;
 }
 
@@ -106,7 +68,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #000000;
+  background-color: #000000;
   z-index: -1;
   transform: scaleX(0);
   transform-origin: left;
@@ -114,7 +76,7 @@
 }
 
 .gift-banner__topbar-btn:hover { 
-  color: #ffffff;
+  color: #ffffff !important;
   border-color: #000000;
 }
 
@@ -124,6 +86,7 @@
 
 .gift-banner__topbar-btn .arrow {
   display: inline-block;
+  color: inherit !important;
   transition: transform 0.3s ease;
 }
 
@@ -217,7 +180,46 @@
     margin: 0 auto; 
   }
 }
-{% endstylesheet %}
+</style>
+
+<div class="gift-banner" style="background-image: url('{% if section.settings.hero_bg != blank %}{{ section.settings.hero_bg | image_url: width: 1600 }}{% else %}{{ 'hero-bg.png' | asset_url }}{% endif %}');">
+  <div class="gift-banner__topbar">
+    <div class="gift-banner__brand">
+      {% if section.settings.custom_logo != blank %}
+        <img
+          src="{{ section.settings.custom_logo | image_url: width: 300 }}"
+          alt="{{ section.settings.custom_logo.alt | default: 'TISSO VISON' }}"
+          class="gift-banner__logo"
+          loading="eager"
+        >
+      {% else %}
+        <span>{{ section.settings.brand_name | default: 'TISSO VISON' }}</span>
+      {% endif %}
+    </div>
+    <span class="gift-banner__topbar-text">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</span>
+    <a href="{{ section.settings.topbar_btn_link | default: '/collections/all' }}" class="gift-banner__topbar-btn">
+      {{ section.settings.topbar_btn_text | default: 'CHOOSE GIFT' }}
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <div class="gift-banner__hero">
+    <h1 class="gift-banner__heading">{{ section.settings.heading | default: 'The Gift Guide' }}</h1>
+    <div class="gift-banner__subtext">
+      {% if section.settings.subtext != blank %}
+        {{ section.settings.subtext }}
+      {% else %}
+        <p>Discover Joy: Your Ultimate Holiday Gift Destination.<br>Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>
+      {% endif %}
+    </div>
+    <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="gift-banner__shop-btn">
+      {{ section.settings.shop_btn_text | default: 'SHOP NOW' }}
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <div class="gift-banner__strip">{{ section.settings.strip_text | default: 'SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL' }}</div>
+</div>
 
 {% schema %}
 {
