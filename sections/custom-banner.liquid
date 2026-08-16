@@ -103,12 +103,14 @@
   color: #000000 !important;
   font-weight: 600;
   font-size: 14px;
+  font-family: inherit;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   overflow: hidden;
   z-index: 1;
   border: 1px solid #f5e13c;
+  outline: none;
   cursor: pointer;
   transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.35s ease;
 }
@@ -204,6 +206,10 @@
   width: fit-content;
   font-weight: 600;
   font-size: 14px;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
   text-decoration: none;
   transition: background-color 0.2s ease;
 }
@@ -426,10 +432,10 @@
     <!-- Topbar Content: Announcement & Button (Dropdown on mobile) -->
     <div class="gift-banner__topbar-content" id="giftBannerTopbarContent">
       <span class="gift-banner__topbar-text">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</span>
-      <a href="javascript:void(0);" class="gift-banner__topbar-btn">
+      <button type="button" class="gift-banner__topbar-btn">
         <span>{{ section.settings.topbar_btn_text | default: 'CHOOSE GIFT' }}</span>
         <span class="arrow">→</span>
-      </a>
+      </button>
     </div>
   </div>
 
@@ -452,10 +458,10 @@
         {% endif %}
       </div>
       <div class="gift-banner__desktop-btn-wrap">
-        <a href="javascript:void(0);" class="gift-banner__shop-btn">
+        <button type="button" class="gift-banner__shop-btn">
           <span>{{ section.settings.shop_btn_text | default: 'SHOP NOW' }}</span>
           <span class="arrow">→</span>
-        </a>
+        </button>
       </div>
     </div>
 
@@ -463,10 +469,10 @@
     <div class="gift-banner__hero-media">
       <img src="{{ hero_bg_url }}" alt="{{ section.settings.heading | default: 'The Gift Guide' }}" class="gift-banner__hero-img" loading="eager">
       <div class="gift-banner__shop-btn-wrap">
-        <a href="javascript:void(0);" class="gift-banner__shop-btn">
+        <button type="button" class="gift-banner__shop-btn">
           <span>{{ section.settings.shop_btn_text | default: 'SHOP NOW' }}</span>
           <span class="arrow">→</span>
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -508,12 +514,10 @@ document.addEventListener('click', function(e) {
     { "type": "text", "id": "brand_name", "label": "Brand Name (Fallback)", "default": "TISSO VISON" },
     { "type": "text", "id": "topbar_text", "label": "Top Bar Text", "default": "Find the ideal gift for your loved ones." },
     { "type": "text", "id": "topbar_btn_text", "label": "Top Bar Button Text", "default": "CHOOSE GIFT" },
-    { "type": "url", "id": "topbar_btn_link", "label": "Top Bar Button Link" },
     { "type": "image_picker", "id": "hero_bg", "label": "Hero Background Image" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "The Gift Guide" },
     { "type": "richtext", "id": "subtext", "label": "Subtext" },
     { "type": "text", "id": "shop_btn_text", "label": "Shop Button Text", "default": "SHOP NOW" },
-    { "type": "url", "id": "shop_btn_link", "label": "Shop Button Link" },
     { "type": "text", "id": "strip_text", "label": "Bottom Strip Text", "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR" }
   ],
   "presets": [{ "name": "Gift Banner" }]
