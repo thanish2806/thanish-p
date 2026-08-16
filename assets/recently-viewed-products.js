@@ -12,17 +12,25 @@ export class RecentlyViewed {
    * @param {string} productId - The ID of the product to add.
    */
   static addProduct(productId) {
-    let viewedProducts = this.getProducts();
+    try {
+      let viewedProducts = this.getProducts();
 
-    viewedProducts = viewedProducts.filter((/** @type {string} */ id) => id !== productId);
-    viewedProducts.unshift(productId);
-    viewedProducts = viewedProducts.slice(0, this.#MAX_PRODUCTS);
+      viewedProducts = viewedProducts.filter((/** @type {string} */ id) => id !== productId);
+      viewedProducts.unshift(productId);
+      viewedProducts = viewedProducts.slice(0, this.#MAX_PRODUCTS);
 
-    localStorage.setItem(this.#STORAGE_KEY, JSON.stringify(viewedProducts));
+      localStorage.setItem(this.#STORAGE_KEY, JSON.stringify(viewedProducts));
+    } catch (e) {
+      // Ignored for sandboxed environments
+    }
   }
 
   static clearProducts() {
-    localStorage.removeItem(this.#STORAGE_KEY);
+    try {
+      localStorage.removeItem(this.#STORAGE_KEY);
+    } catch (e) {
+      // Ignored for sandboxed environments
+    }
   }
 
   /**
@@ -30,6 +38,10 @@ export class RecentlyViewed {
    * @returns {string[]} The list of viewed products.
    */
   static getProducts() {
-    return JSON.parse(localStorage.getItem(this.#STORAGE_KEY) || '[]');
+    try {
+      return JSON.parse(localStorage.getItem(this.#STORAGE_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
   }
 }
