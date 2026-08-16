@@ -426,13 +426,7 @@
     <!-- Topbar Content: Announcement & Button (Dropdown on mobile) -->
     <div class="gift-banner__topbar-content" id="giftBannerTopbarContent">
       <span class="gift-banner__topbar-text">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</span>
-      {% liquid
-        assign topbar_url = '#tisso-lookbook'
-        if section.settings.topbar_btn_link != blank
-          assign topbar_url = section.settings.topbar_btn_link
-        endif
-      %}
-      <a href="{{ topbar_url }}" class="gift-banner__topbar-btn" data-tisso-nav="{{ topbar_url }}">
+      <a href="javascript:void(0);" class="gift-banner__topbar-btn">
         <span>{{ section.settings.topbar_btn_text | default: 'CHOOSE GIFT' }}</span>
         <span class="arrow">→</span>
       </a>
@@ -443,11 +437,6 @@
     assign hero_bg_url = 'hero-bg.png' | asset_url
     if section.settings.hero_bg != blank
       assign hero_bg_url = section.settings.hero_bg | image_url: width: 1600
-    endif
-
-    assign shop_url = '#tisso-lookbook'
-    if section.settings.shop_btn_link != blank
-      assign shop_url = section.settings.shop_btn_link
     endif
   %}
 
@@ -463,7 +452,7 @@
         {% endif %}
       </div>
       <div class="gift-banner__desktop-btn-wrap">
-        <a href="{{ shop_url }}" class="gift-banner__shop-btn" data-tisso-nav="{{ shop_url }}">
+        <a href="javascript:void(0);" class="gift-banner__shop-btn">
           <span>{{ section.settings.shop_btn_text | default: 'SHOP NOW' }}</span>
           <span class="arrow">→</span>
         </a>
@@ -474,7 +463,7 @@
     <div class="gift-banner__hero-media">
       <img src="{{ hero_bg_url }}" alt="{{ section.settings.heading | default: 'The Gift Guide' }}" class="gift-banner__hero-img" loading="eager">
       <div class="gift-banner__shop-btn-wrap">
-        <a href="{{ shop_url }}" class="gift-banner__shop-btn" data-tisso-nav="{{ shop_url }}">
+        <a href="javascript:void(0);" class="gift-banner__shop-btn">
           <span>{{ section.settings.shop_btn_text | default: 'SHOP NOW' }}</span>
           <span class="arrow">→</span>
         </a>
@@ -502,26 +491,11 @@ window.toggleGiftBannerMenu = function(btn, event) {
   }
 };
 
-// Global delegation listener for menu toggle & button navigation
+// Global delegation listener for mobile menu toggle only
 document.addEventListener('click', function(e) {
   const toggle = e.target.closest('#giftBannerToggle, .gift-banner__toggle-btn');
   if (toggle) {
     window.toggleGiftBannerMenu(toggle, e);
-    return;
-  }
-
-  const navBtn = e.target.closest('[data-tisso-nav]');
-  if (navBtn) {
-    const target = navBtn.getAttribute('data-tisso-nav') || navBtn.getAttribute('href');
-    if (target === '#tisso-lookbook') {
-      const targetEl = document.getElementById('tisso-lookbook') || document.querySelector('.tisso-lookbook-wrapper');
-      if (targetEl) {
-        e.preventDefault();
-        targetEl.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (target && target !== '#' && !target.startsWith('#')) {
-      window.location.href = target;
-    }
   }
 });
 </script>
