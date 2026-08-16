@@ -15,14 +15,14 @@
     <div class="tisso-topbar__brand">
       {%- if section.settings.brand_logo != blank -%}
         <a href="{{ routes.root_url | default: '/' }}" class="tisso-topbar__logo-link">
-          {{
-            section.settings.brand_logo
-            | image_url: width: 600
-            | image_tag:
-              loading: 'eager',
-              class: 'tisso-topbar__logo-img',
-              alt: section.settings.brand_logo.alt | default: 'TISSO VISON'
-          }}
+          <img
+            src="{{ section.settings.brand_logo | image_url: width: 600 }}"
+            alt="{{ section.settings.brand_logo.alt | default: 'TISSO VISON' }}"
+            class="tisso-topbar__logo-img"
+            loading="eager"
+            width="{{ section.settings.brand_logo.width | default: 140 }}"
+            height="{{ section.settings.brand_logo.height | default: 40 }}"
+          >
         </a>
       {%- else -%}
         <a href="{{ routes.root_url | default: '/' }}" class="tisso-topbar__brand-link">
