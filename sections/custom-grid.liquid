@@ -535,18 +535,26 @@
   text-align: center;
 }
 
-  .tisso-lookbook-container {
-    padding: 0 16px;
+@media (max-width: 768px) {
+  .tisso-lookbook-wrapper {
+    padding: 36px 0 50px 0;
   }
-  .tisso-lookbook__grid {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 8px;
-    row-gap: 8px;
+  .tisso-lookbook-container {
+    padding: 0 12px;
   }
   .tisso-lookbook__title {
     font-size: 26px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     text-align: center;
+  }
+  .tisso-lookbook__grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    column-gap: 6px !important;
+    row-gap: 6px !important;
+  }
+  .tisso-pin {
+    width: 22px;
+    height: 22px;
   }
 }
 </style>
