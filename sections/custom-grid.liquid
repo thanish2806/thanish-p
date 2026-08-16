@@ -33,7 +33,9 @@
           {% endif %}
 
           {% if product != blank %}
-            {% assign img_url = product.featured_image | image_url: width: 800 %}
+            {% if product.featured_image != blank %}
+              {% assign img_url = product.featured_image | image_url: width: 800 %}
+            {% endif %}
             {% assign title = product.title %}
             {% assign price = product.price | money %}
             {% assign desc = product.description | strip_html | truncate: 140 %}
