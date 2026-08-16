@@ -37,6 +37,9 @@
         <div class="tisso-hero__description">
           {% if section.settings.subtext != blank %}
             {{ section.settings.subtext }}
+          {% else %}
+            <p>Discover Joy: Your Ultimate Holiday Gift Destination.<br>Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>
+          {% endif %}
         </div>
         <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="tisso-btn-black">
           <span>{{ section.settings.shop_btn_text | default: 'SHOP NOW' }}</span>
