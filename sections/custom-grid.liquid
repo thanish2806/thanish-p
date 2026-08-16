@@ -171,7 +171,7 @@
   </div>
 </div>
 
-{% stylesheet %}
+<style>
 .tisso-lookbook-wrapper {
   width: 100%;
   padding: 60px 0 80px 0;
@@ -535,21 +535,21 @@
   text-align: center;
 }
 
-@media (max-width: 900px) {
   .tisso-lookbook-container {
-    padding: 0 20px;
+    padding: 0 16px;
   }
   .tisso-lookbook__grid {
     grid-template-columns: repeat(2, 1fr);
-    column-gap: 12px;
-    row-gap: 12px;
+    column-gap: 8px;
+    row-gap: 8px;
   }
   .tisso-lookbook__title {
-    font-size: 1.85rem;
+    font-size: 26px;
     margin-bottom: 20px;
+    text-align: center;
   }
 }
-{% endstylesheet %}
+</style>
 
 <script>
 window.openTissoModal = function(btn) {
