@@ -7,6 +7,7 @@
   box-sizing: border-box;
   background-color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
 }
 
 /* Topbar Desktop */
@@ -30,8 +31,10 @@
   align-items: center;
   justify-content: center;
   color: #000000;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .gift-banner__toggle-icon-open,
@@ -39,18 +42,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .gift-banner__toggle-icon-close {
-  display: none;
+  display: none !important;
 }
 
 .gift-banner__topbar.is-menu-open .gift-banner__toggle-icon-open {
-  display: none;
+  display: none !important;
 }
 
 .gift-banner__topbar.is-menu-open .gift-banner__toggle-icon-close {
-  display: flex;
+  display: flex !important;
 }
 
 .gift-banner__brand { 
@@ -228,21 +232,21 @@
   box-sizing: border-box;
 }
 
-/* Mobile Responsive Styling */
+/* Mobile Responsive Styling (Matches Design Screenshot 1 & 2) */
 @media (max-width: 768px) {
   .gift-banner__topbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
+    padding: 12px 16px;
     background: #f3f3f1;
+    position: relative;
   }
 
   .gift-banner__toggle-btn {
-    display: flex;
-    z-index: 10;
-    margin-right: -40px;
+    display: flex !important;
+    z-index: 20;
   }
 
   .gift-banner__brand {
@@ -258,17 +262,17 @@
 
   .gift-banner__brand-spacer {
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
   }
 
-  /* Mobile Dropdown Drawer (Screenshot 1) */
+  /* Mobile Dropdown Panel */
   .gift-banner__topbar-content {
     display: none;
     width: 100%;
     margin-left: 0;
     flex-direction: column;
-    padding: 24px 16px 24px 16px;
+    padding: 24px 16px 28px 16px;
     background: #f3f3f1;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     box-sizing: border-box;
@@ -278,7 +282,7 @@
   }
 
   .gift-banner__topbar.is-menu-open .gift-banner__topbar-content {
-    display: flex;
+    display: flex !important;
   }
 
   .gift-banner__topbar-text {
@@ -297,7 +301,7 @@
     margin: 0 auto;
   }
 
-  /* Hero Section on Mobile (Screenshot 2) */
+  /* Hero Section on Mobile */
   .gift-banner__hero {
     min-height: auto;
     padding: 36px 16px 0 16px;
@@ -378,10 +382,17 @@
 <div class="gift-banner">
   <!-- Topbar Header with Mobile Hamburger Menu Toggle -->
   <div class="gift-banner__topbar" id="giftBannerTopbar">
-    <button type="button" class="gift-banner__toggle-btn" id="giftBannerToggle" aria-label="Toggle Menu" aria-expanded="false">
+    <button
+      type="button"
+      class="gift-banner__toggle-btn"
+      id="giftBannerToggle"
+      aria-label="Toggle Menu"
+      aria-expanded="false"
+      onclick="window.toggleGiftBannerMenu(this, event)"
+    >
       <!-- Hamburger Icon (Closed state) -->
       <span class="gift-banner__toggle-icon-open">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -389,7 +400,7 @@
       </span>
       <!-- Close Icon (Open state) -->
       <span class="gift-banner__toggle-icon-close">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -413,7 +424,7 @@
     <div class="gift-banner__brand-spacer" aria-hidden="true"></div>
 
     <!-- Topbar Content: Announcement & Button (Dropdown on mobile) -->
-    <div class="gift-banner__topbar-content">
+    <div class="gift-banner__topbar-content" id="giftBannerTopbarContent">
       <span class="gift-banner__topbar-text">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</span>
       <a href="{{ section.settings.topbar_btn_link | default: '/collections/all' }}" class="gift-banner__topbar-btn">
         <span>{{ section.settings.topbar_btn_text | default: 'CHOOSE GIFT' }}</span>
@@ -465,16 +476,28 @@
 </div>
 
 <script>
-(function() {
-  const toggleBtn = document.getElementById('giftBannerToggle');
-  const topbar = document.getElementById('giftBannerTopbar');
-  if (toggleBtn && topbar) {
-    toggleBtn.addEventListener('click', function() {
-      const isOpen = topbar.classList.toggle('is-menu-open');
-      toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
+window.toggleGiftBannerMenu = function(btn, event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
   }
-})();
+  const topbar = document.getElementById('giftBannerTopbar') || (btn ? btn.closest('.gift-banner__topbar') : null);
+  const toggleBtn = btn || document.getElementById('giftBannerToggle');
+  if (topbar) {
+    const isOpen = topbar.classList.toggle('is-menu-open');
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+  }
+};
+
+// Global delegation listener as guarantee
+document.addEventListener('click', function(e) {
+  const toggle = e.target.closest('#giftBannerToggle, .gift-banner__toggle-btn');
+  if (toggle) {
+    window.toggleGiftBannerMenu(toggle, e);
+  }
+});
 </script>
 
 {% schema %}
