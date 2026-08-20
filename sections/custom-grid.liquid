@@ -573,6 +573,7 @@ window.openTissoModal = function(btn) {
   const colorTab1 = document.getElementById('color-tab-1');
   const colorTab2 = document.getElementById('color-tab-2');
   const toast = document.getElementById('popup-toast');
+  const sizeSelect = document.getElementById('popup-size');
 
   if (popupImg) {
     popupImg.src = btn.getAttribute('data-image') || '';
@@ -584,6 +585,7 @@ window.openTissoModal = function(btn) {
   if (colorText1) colorText1.textContent = btn.getAttribute('data-color1') || 'Blue';
   if (colorText2) colorText2.textContent = btn.getAttribute('data-color2') || 'Black';
   if (toast) toast.style.display = 'none';
+  if (sizeSelect) sizeSelect.value = '';
 
   if (colorTab1 && colorTab2) {
     colorTab1.classList.add('active');
