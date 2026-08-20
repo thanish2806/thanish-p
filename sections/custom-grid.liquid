@@ -1,200 +1,2615 @@
-<div class="product-grid">
-  {% for block in section.blocks %}
-    {% assign product = block.settings.product %}
-    <div class="product-grid__item" {{ block.shopify_attributes }}>
-      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" loading="lazy">
+<div class="product-grid-popup-section">
+
+  <!-- PRODUCT GRID -->
+  <div class="product-grid">
+    {% for block in section.blocks %}
+      {% assign product = block.settings.product %}
+
+      {% if product != blank %}
+        <div
+          class="product-grid__item"
+          {{ block.shopify_attributes }}
+        >
+          <img
+            src="{{ product.featured_image | image_url: width: 900 }}"
+            alt="{{ product.title | escape }}"
+            loading="lazy"
+            width="{{ product.featured_image.width }}"
+            height="{{ product.featured_image.height }}"
+          >
+
+          <button
+            type="button"
+            class="product-grid__plus"
+            style="
+              top: {{ block.settings.pin_top }}%;
+              left: {{ block.settings.pin_left }}%;
+            "
+            data-open-popup
+            data-product-handle="{{ product.handle }}"
+            aria-label="View {{ product.title | escape }}"
+          >
+            +
+          </button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+
+  <!-- PRODUCT POPUP -->
+  <div
+    class="product-popup"
+    id="product-popup"
+    hidden
+    aria-hidden="true"
+  >
+
+    <div
+      class="product-popup__overlay"
+      data-close-popup
+    ></div>
+
+    <div
+      class="product-popup__content"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-popup-title"
+    >
+
+      <!-- CLOSE -->
       <button
-        class="product-grid__plus"
-        style="top: {{ block.settings.pin_top }}%; left: {{ block.settings.pin_left }}%;"
-        data-open-popup
-        data-product-handle="{{ product.handle }}"
-      >+</button>
-    </div>
-  {% endfor %}
-</div>
-
-<div class="product-popup" id="product-popup" hidden>
-  <div class="product-popup__overlay" data-close-popup></div>
-  <div class="product-popup__content">
-    <button class="product-popup__close" data-close-popup>×</button>
-    <img class="product-popup__image" src="" alt="">
-    <div class="product-popup__info">
-      <h2 class="product-popup__title"></h2>
-      <p class="product-popup__price"></p>
-      <p class="product-popup__desc"></p>
-
-      <div class="product-popup__colors"></div>
-
-      <label class="product-popup__size-label">Size</label>
-      <select class="product-popup__size"></select>
-
-      <button class="product-popup__add-to-cart">
-        ADD TO CART <span class="arrow">→</span>
+        type="button"
+        class="product-popup__close"
+        data-close-popup
+        aria-label="Close product"
+      >
+        ×
       </button>
+
+
+      <!-- PRODUCT -->
+      <div class="product-popup__top">
+
+        <div class="product-popup__image-wrapper">
+          <img
+            class="product-popup__image"
+            src=""
+            alt=""
+          >
+        </div>
+
+        <div class="product-popup__info">
+
+          <h2
+            class="product-popup__title"
+            id="product-popup-title"
+          ></h2>
+
+          <p class="product-popup__price"></p>
+
+          <div class="product-popup__desc"></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- OPTIONS -->
+      <div class="product-popup__options">
+
+        <!-- COLOR -->
+        <div class="product-popup__option product-popup__color-option">
+
+          <label class="product-popup__label">
+            Color
+          </label>
+
+          <div
+            class="product-popup__colors"
+            data-color-options
+          ></div>
+
+        </div>
+
+
+        <!-- SIZE -->
+        <div class="product-popup__option product-popup__size-option">
+
+          <label class="product-popup__label">
+            Size
+          </label>
+
+          <div class="product-popup__size-dropdown">
+
+            <button
+              type="button"
+              class="product-popup__size-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span class="product-popup__size-trigger-label is-placeholder">
+                Choose your size
+              </span>
+
+              <span class="product-popup__size-caret">
+                <svg
+                  viewBox="0 0 12 7"
+                  width="12"
+                  height="7"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M1 1L6 6L11 1"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.2"
+                  />
+                </svg>
+              </span>
+            </button>
+
+            <ul
+              class="product-popup__size-list"
+              role="listbox"
+              hidden
+            ></ul>
+
+          </div>
+
+        </div>
+
+
+        <!-- ERROR -->
+        <p
+          class="product-popup__error"
+          role="alert"
+          hidden
+        ></p>
+
+      </div>
+
+
+      <!-- ADD TO CART -->
+      <button
+        type="button"
+        class="product-popup__add-to-cart"
+      >
+        <span class="product-popup__add-text">
+          ADD TO CART
+        </span>
+
+        <span class="product-popup__add-arrow">
+          <svg
+            viewBox="0 0 36 18"
+            aria-hidden="true"
+          >
+            <path
+              d="M1 9H32"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+            <path
+              d="M25 2L32 9L25 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+        </span>
+      </button>
+
     </div>
   </div>
+
 </div>
 
+
 {% stylesheet %}
+
+/* =========================================================
+   PRODUCT GRID
+   ========================================================= */
+
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
+  width: 100%;
 }
-.product-grid__item { position: relative; }
-.product-grid__item img { width: 100%; display: block; }
+
+.product-grid__item {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-grid__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+/* =========================================================
+   PLUS BUTTON
+   ========================================================= */
+
 .product-grid__plus {
   position: absolute;
-  transform: translate(-50%, -50%);
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: #fff;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-  transition: transform 0.2s ease;
-}
-.product-grid__plus:hover { transform: translate(-50%, -50%) scale(1.1); }
 
-.product-popup { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; }
-.product-popup[hidden] { display: none; }
-.product-popup__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+  width: 32px;
+  height: 32px;
+
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #fff;
+  color: #000;
+
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-shadow: 0 1px 5px rgba(0,0,0,.22);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.product-grid__plus:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.product-grid__plus:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   POPUP OVERLAY
+   ========================================================= */
+
+.product-popup {
+  position: fixed;
+  inset: 0;
+
+  z-index: 999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  overflow-y: auto;
+}
+
+.product-popup[hidden] {
+  display: none;
+}
+
+.product-popup__overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,.48);
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   POPUP
+   EXACT SIZE: 311px × 447px
+   ========================================================= */
+
 .product-popup__content {
   position: relative;
+  z-index: 2;
+
+  width: 311px;
+  height: 447px;
+
+  min-width: 311px;
+  min-height: 447px;
+
+  max-width: 311px;
+  max-height: 447px;
+
+  padding: 38px 19px 29px;
+
+  box-sizing: border-box;
+
   background: #fff;
+  border: 1px solid #111;
+
+  color: #111;
+
   display: flex;
-  gap: 32px;
-  padding: 40px;
-  max-width: 700px;
-  width: 90%;
+  flex-direction: column;
+
+  overflow: hidden;
 }
-.product-popup__image { width: 300px; height: 300px; object-fit: cover; }
-.product-popup__close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; }
-.product-popup__colors { display: flex; border: 1px solid #000; margin: 16px 0; }
-.product-popup__colors button {
-  flex: 1; padding: 14px; border: none; background: #fff; cursor: pointer;
-  border-left: 3px solid transparent;
+
+
+/* =========================================================
+   CLOSE
+   ========================================================= */
+
+.product-popup__close {
+  position: absolute;
+
+  top: 9px;
+  right: 11px;
+
+  z-index: 5;
+
+  width: 22px;
+  height: 22px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  background: transparent;
+
+  color: #111;
+
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+
+  cursor: pointer;
 }
-.product-popup__colors button.active { border-left-color: #1a4fd6; font-weight: 600; }
-.product-popup__size { width: 100%; padding: 14px; margin-bottom: 20px; }
+
+.product-popup__close:hover {
+  opacity: .6;
+}
+
+.product-popup__close:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   PRODUCT TOP
+   ========================================================= */
+
+.product-popup__top {
+  display: grid;
+  grid-template-columns: 121px minmax(0,1fr);
+
+  column-gap: 8px;
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+.product-popup__image-wrapper {
+  width: 121px;
+  height: 140px;
+
+  overflow: hidden;
+
+  background: #f4f4f4;
+}
+
+.product-popup__image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   PRODUCT INFO
+   ========================================================= */
+
+.product-popup__info {
+  min-width: 0;
+
+  padding-top: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.product-popup__title {
+  margin: 0 0 15px;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.25;
+
+  color: #111;
+}
+
+.product-popup__price {
+  margin: 0 0 13px;
+
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+
+  color: #111;
+}
+
+.product-popup__desc {
+  max-width: 145px;
+
+  margin: 0;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.15;
+
+  color: #171717;
+
+  overflow-wrap: break-word;
+}
+
+.product-popup__desc p {
+  margin: 0;
+}
+
+
+/* =========================================================
+   OPTIONS
+   ========================================================= */
+
+.product-popup__options {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.product-popup__option {
+  width: 100%;
+}
+
+.product-popup__label {
+  display: block;
+
+  margin: 0 0 7px;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+
+  color: #202020;
+}
+
+
+/* =========================================================
+   COLOR SELECTOR
+   ========================================================= */
+
+.product-popup__colors {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+
+  width: 100%;
+  min-height: 41px;
+
+  border: 1px solid #777;
+
+  box-sizing: border-box;
+}
+
+.product-popup__colors:empty {
+  display: none;
+}
+
+
+/*
+   NORMAL COLOR
+*/
+
+.product-popup__color-button {
+  position: relative;
+
+  width: 100%;
+  min-height: 40px;
+
+  padding: 0 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  border: 0;
+  border-radius: 0;
+
+  background: #fff;
+  color: #111;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+
+  line-height: 1;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color .15s ease,
+    color .15s ease;
+}
+
+
+/*
+   DIVIDER
+*/
+
+.product-popup__color-button + .product-popup__color-button {
+  border-left: 1px solid #777;
+}
+
+
+/*
+   HOVER
+*/
+
+.product-popup__color-button:hover {
+  background: #000;
+  color: #fff;
+}
+
+
+/*
+   SELECTED COLOR
+   FULL BLACK BACKGROUND
+*/
+
+.product-popup__color-button.is-selected {
+  background: #000;
+  color: #fff;
+}
+
+
+/*
+   SELECTED COLOR OVERRIDES
+*/
+
+.product-popup__color-button.is-selected:hover {
+  background: #000;
+  color: #fff;
+}
+
+
+/*
+   FOCUS
+*/
+
+.product-popup__color-button:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: -2px;
+}
+
+
+/* =========================================================
+   SIZE
+   ========================================================= */
+
+.product-popup__size-option {
+  margin-top: 15px;
+}
+
+.product-popup__size-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+
+/* =========================================================
+   SIZE TRIGGER
+   ========================================================= */
+
+.product-popup__size-trigger {
+  position: relative;
+
+  width: 100%;
+  height: 41px;
+
+  padding: 0 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid #777;
+  border-radius: 0;
+
+  background: #fff;
+  color: #111;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+.product-popup__size-trigger:hover {
+  background: #fafafa;
+}
+
+.product-popup__size-trigger:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 2px;
+}
+
+.product-popup__size-trigger-label {
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.product-popup__size-trigger-label.is-placeholder {
+  color: #202020;
+}
+
+
+/* =========================================================
+   SIZE ARROW
+   ========================================================= */
+
+.product-popup__size-caret {
+  width: 22px;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-left: 1px solid #777;
+
+  margin-left: 10px;
+
+  transition: transform .16s ease;
+}
+
+.product-popup__size-trigger[aria-expanded="true"]
+.product-popup__size-caret {
+  transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   SCROLLABLE SIZE DROPDOWN
+   ========================================================= */
+
+.product-popup__size-list {
+  position: absolute;
+
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  z-index: 20;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  background: #fff;
+
+  border: 1px solid #777;
+  border-top: 0;
+
+  /*
+   * IMPORTANT:
+   * Only the dropdown scrolls.
+   * Popup remains 311 × 447.
+   */
+  max-height: 150px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  box-sizing: border-box;
+
+  overscroll-behavior: contain;
+
+  scroll-behavior: smooth;
+
+  scrollbar-width: thin;
+  scrollbar-color: #777 #f5f5f5;
+}
+
+.product-popup__size-list[hidden] {
+  display: none;
+}
+
+
+/* Chrome / Edge / Safari scrollbar */
+
+.product-popup__size-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.product-popup__size-list::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.product-popup__size-list::-webkit-scrollbar-thumb {
+  background: #777;
+}
+
+.product-popup__size-list::-webkit-scrollbar-thumb:hover {
+  background: #111;
+}
+
+
+/* =========================================================
+   SIZE ITEMS
+   ========================================================= */
+
+.product-popup__size-list li {
+  width: 100%;
+  min-height: 38px;
+
+  padding: 0 12px;
+
+  display: flex;
+  align-items: center;
+
+  border-top: 1px solid #eee;
+
+  background: #fff;
+  color: #111;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+.product-popup__size-list li:first-child {
+  border-top: 0;
+}
+
+.product-popup__size-list li:hover,
+.product-popup__size-list li.is-active {
+  background: #000;
+  color: #fff;
+}
+
+.product-popup__size-list li:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: -2px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.product-popup__error {
+  margin: 7px 0 0;
+
+  color: #111;
+
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.product-popup__error[hidden] {
+  display: none;
+}
+
+
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+
 .product-popup__add-to-cart {
-  width: 100%; background: #000; color: #fff; padding: 16px;
-  border: none; display: flex; align-items: center; justify-content: center; gap: 10px;
-  cursor: pointer; transition: opacity 0.2s ease;
+  position: relative;
+
+  width: 100%;
+  height: 45px;
+
+  margin-top: auto;
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 0;
+
+  background: #000;
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    opacity .15s ease,
+    transform .15s ease;
 }
-.product-popup__add-to-cart:hover { opacity: 0.85; }
+
+.product-popup__add-to-cart:hover {
+  opacity: .9;
+}
+
+.product-popup__add-to-cart:active {
+  transform: scale(.995);
+}
+
+.product-popup__add-to-cart:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 3px;
+}
+
+.product-popup__add-text {
+  position: absolute;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  white-space: nowrap;
+}
+
+.product-popup__add-arrow {
+  position: absolute;
+
+  right: 28px;
+
+  width: 35px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+}
+
+.product-popup__add-arrow svg {
+  display: block;
+
+  width: 35px;
+  height: 18px;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.product-popup__add-to-cart.is-loading {
+  pointer-events: none;
+  opacity: .65;
+}
+
+.product-popup__add-to-cart.is-loading
+.product-popup__add-text {
+  font-size: 0;
+}
+
+.product-popup__add-to-cart.is-loading
+.product-popup__add-text::after {
+  content: "ADDING...";
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media screen and (max-width: 749px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
-  .product-popup__content { flex-direction: column; padding: 24px; }
-  .product-popup__image { width: 100%; height: auto; }
+
+  .product-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  .product-popup {
+    padding: 0;
+  }
+
+  /*
+   * EXACT POPUP SIZE
+   */
+
+  .product-popup__content {
+    width: 311px;
+    height: 447px;
+
+    min-width: 311px;
+    min-height: 447px;
+
+    max-width: 311px;
+    max-height: 447px;
+
+    padding: 38px 19px 29px;
+  }
+
+  .product-popup__top {
+    grid-template-columns: 121px minmax(0,1fr);
+    column-gap: 8px;
+  }
+
+  .product-popup__image-wrapper {
+    width: 121px;
+    height: 140px;
+  }
+
+  .product-popup__desc {
+    max-width: 145px;
+  }
+
 }
+
+
+/* =========================================================
+   VERY SMALL DEVICES
+   ========================================================= */
+
+@media screen and (max-width: 320px) {
+
+  .product-popup__content {
+    transform: scale(.96);
+    transform-origin: center center;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .product-grid__plus,
+  .product-popup__size-caret,
+  .product-popup__add-to-cart,
+  .product-popup__color-button {
+    transition: none;
+  }
+
+}
+
 {% endstylesheet %}
+
 
 <script>
 (function () {
+
+  'use strict';
+
+
+  /* =======================================================
+     STATE
+     ======================================================= */
+
   let currentProduct = null;
-  let selectedOptions = {};
 
-  document.addEventListener('click', async function (e) {
-    const openBtn = e.target.closest('[data-open-popup]');
-    if (openBtn) {
-      const handle = openBtn.dataset.productHandle;
-      const res = await fetch('/products/' + handle + '.js');
-      const product = await res.json();
-      openProductPopup(product);
+  let selectedOptions = {
+    color: null,
+    size: null
+  };
+
+  let lastFocusedElement = null;
+
+
+  /* =======================================================
+     ELEMENTS
+     ======================================================= */
+
+  const popup =
+    document.getElementById('product-popup');
+
+  if (!popup) return;
+
+
+  const image =
+    popup.querySelector(
+      '.product-popup__image'
+    );
+
+  const title =
+    popup.querySelector(
+      '.product-popup__title'
+    );
+
+  const price =
+    popup.querySelector(
+      '.product-popup__price'
+    );
+
+  const description =
+    popup.querySelector(
+      '.product-popup__desc'
+    );
+
+  const colors =
+    popup.querySelector(
+      '[data-color-options]'
+    );
+
+  const sizeDropdown =
+    popup.querySelector(
+      '.product-popup__size-dropdown'
+    );
+
+  const sizeTrigger =
+    popup.querySelector(
+      '.product-popup__size-trigger'
+    );
+
+  const sizeLabel =
+    popup.querySelector(
+      '.product-popup__size-trigger-label'
+    );
+
+  const sizeList =
+    popup.querySelector(
+      '.product-popup__size-list'
+    );
+
+  const addButton =
+    popup.querySelector(
+      '.product-popup__add-to-cart'
+    );
+
+  const errorMessage =
+    popup.querySelector(
+      '.product-popup__error'
+    );
+
+
+  /* =======================================================
+     STRIP HTML
+     ======================================================= */
+
+  function stripHTML(html) {
+
+    if (!html) return '';
+
+    const element =
+      document.createElement('div');
+
+    element.innerHTML = html;
+
+    return (
+      element.textContent ||
+      element.innerText ||
+      ''
+    );
+
+  }
+
+
+  /* =======================================================
+     PRICE
+     ======================================================= */
+
+  function formatPrice(value) {
+
+    const amount =
+      Number(value || 0) / 100;
+
+    {% if shop.currency == 'EUR' %}
+
+      return new Intl.NumberFormat(
+        'de-DE',
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }
+      ).format(amount) + '€';
+
+    {% else %}
+
+      try {
+
+        return new Intl.NumberFormat(
+          undefined,
+          {
+            style: 'currency',
+            currency: '{{ shop.currency }}'
+          }
+        ).format(amount);
+
+      } catch (error) {
+
+        return amount.toFixed(2);
+
+      }
+
+    {% endif %}
+
+  }
+
+
+  /* =======================================================
+     OPTION INDEXES
+     ======================================================= */
+
+  function getOptionIndexes(product) {
+
+    const indexes = {
+      color: null,
+      size: null
+    };
+
+    if (
+      !product ||
+      !product.options
+    ) {
+      return indexes;
     }
-    if (e.target.closest('[data-close-popup]')) {
-      document.getElementById('product-popup').hidden = true;
+
+
+    product.options.forEach(
+      function (option,index) {
+
+        const name =
+          String(option.name || '')
+            .trim()
+            .toLowerCase();
+
+
+        if (
+          name === 'color' ||
+          name === 'colour'
+        ) {
+
+          indexes.color = index;
+
+        }
+
+
+        if (
+          name === 'size'
+        ) {
+
+          indexes.size = index;
+
+        }
+
+      }
+    );
+
+
+    /*
+     * Shopify fallback
+     */
+
+    if (
+      indexes.color === null &&
+      product.options.length
+    ) {
+
+      indexes.color = 0;
+
     }
-  });
 
-  function openProductPopup(product) {
-    currentProduct = product;
-    selectedOptions = {};
 
-    const popup = document.getElementById('product-popup');
-    popup.querySelector('.product-popup__image').src = product.featured_image;
-    popup.querySelector('.product-popup__title').textContent = product.title;
-    popup.querySelector('.product-popup__price').textContent = (product.price / 100).toFixed(2) + '€';
-    popup.querySelector('.product-popup__desc').textContent = product.description.replace(/<[^>]*>/g, '');
+    if (
+      indexes.size === null &&
+      product.options.length > 1
+    ) {
 
-    const colorValues = [...new Set(product.variants.map(function (v) { return v.option1; }))];
-    const colorWrap = popup.querySelector('.product-popup__colors');
-    colorWrap.innerHTML = colorValues.map(function (c) {
-      return '<button type="button" data-color="' + c + '">' + c + '</button>';
-    }).join('');
-    colorWrap.querySelectorAll('button').forEach(function (b) {
-      b.addEventListener('click', function () {
-        colorWrap.querySelectorAll('button').forEach(function (x) { x.classList.remove('active'); });
-        b.classList.add('active');
-        selectedOptions.color = b.dataset.color;
-      });
-    });
+      indexes.size = 1;
 
-    const sizeValues = [...new Set(product.variants.map(function (v) { return v.option2; }))];
-    const sizeSelect = popup.querySelector('.product-popup__size');
-    sizeSelect.innerHTML = '<option value="">Choose your size</option>' +
-      sizeValues.map(function (s) { return '<option value="' + s + '">' + s + '</option>'; }).join('');
-    sizeSelect.addEventListener('change', function () { selectedOptions.size = sizeSelect.value; });
+    }
 
-    popup.querySelector('.product-popup__add-to-cart').onclick = addToCart;
+
+    return indexes;
+
+  }
+
+
+  /* =======================================================
+     VARIANT OPTION
+     ======================================================= */
+
+  function getVariantOption(
+    variant,
+    index
+  ) {
+
+    if (
+      !variant ||
+      index === null ||
+      index === undefined
+    ) {
+
+      return null;
+
+    }
+
+
+    if (
+      variant.options &&
+      variant.options[index]
+    ) {
+
+      return variant.options[index];
+
+    }
+
+
+    /*
+     * Shopify product.js fallback
+     */
+
+    if (index === 0) {
+      return variant.option1 || null;
+    }
+
+    if (index === 1) {
+      return variant.option2 || null;
+    }
+
+    if (index === 2) {
+      return variant.option3 || null;
+    }
+
+
+    return null;
+
+  }
+
+
+  /* =======================================================
+     OPEN
+     ======================================================= */
+
+  async function openProductPopup(
+    handle,
+    button
+  ) {
+
+    if (!handle) return;
+
+
+    lastFocusedElement = button;
+
+
+    resetPopup();
+
 
     popup.hidden = false;
-  }
 
-  async function addToCart() {
-    const variant = currentProduct.variants.find(function (v) {
-      return v.option1 === selectedOptions.color && v.option2 === selectedOptions.size;
-    });
-    if (!variant) { alert('Select color and size'); return; }
+    popup.setAttribute(
+      'aria-hidden',
+      'false'
+    );
 
-    const items = [{ id: variant.id, quantity: 1 }];
 
-    if (selectedOptions.color === 'Black' && selectedOptions.size === 'Medium') {
-      const jacketRes = await fetch('/products/soft-winter-jacket.js');
-      if (jacketRes.ok) {
-        const jacket = await jacketRes.json();
-        items.push({ id: jacket.variants[0].id, quantity: 1 });
+    document.body.style.overflow =
+      'hidden';
+
+
+    title.textContent =
+      'Loading...';
+
+
+    try {
+
+      const response =
+        await fetch(
+          '/products/' +
+          encodeURIComponent(handle) +
+          '.js'
+        );
+
+
+      if (!response.ok) {
+        throw new Error(
+          'Product request failed.'
+        );
       }
+
+
+      const product =
+        await response.json();
+
+
+      populatePopup(product);
+
+
+    } catch (error) {
+
+      console.error(
+        'Product popup error:',
+        error
+      );
+
+
+      title.textContent =
+        'Unable to load product.';
+
+      description.textContent =
+        'Please try again.';
+
     }
 
-    await fetch('/cart/add.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: items })
-    });
-
-    document.getElementById('product-popup').hidden = true;
-    alert('Added to cart!');
   }
+
+
+  /* =======================================================
+     POPULATE
+     ======================================================= */
+
+  function populatePopup(product) {
+
+    currentProduct = product;
+
+
+    selectedOptions = {
+      color: null,
+      size: null
+    };
+
+
+    const indexes =
+      getOptionIndexes(product);
+
+
+    /* IMAGE */
+
+    if (product.featured_image) {
+
+      image.src =
+        product.featured_image;
+
+      image.alt =
+        product.title || '';
+
+    }
+
+
+    /* TITLE */
+
+    title.textContent =
+      product.title || '';
+
+
+    /* PRICE */
+
+    price.textContent =
+      formatPrice(product.price);
+
+
+    /* DESCRIPTION */
+
+    description.textContent =
+      stripHTML(
+        product.description
+      );
+
+
+    /* COLORS */
+
+    renderColors(
+      product,
+      indexes.color
+    );
+
+
+    /* SIZES */
+
+    renderSizes(
+      product,
+      indexes.size
+    );
+
+
+    /* BUTTON */
+
+    addButton.disabled = false;
+
+    addButton.classList.remove(
+      'is-loading',
+      'is-success'
+    );
+
+    addButton.querySelector(
+      '.product-popup__add-text'
+    ).textContent =
+      'ADD TO CART';
+
+
+    hideError();
+
+  }
+
+
+  /* =======================================================
+     COLORS
+     ======================================================= */
+
+  function renderColors(
+    product,
+    colorIndex
+  ) {
+
+    colors.innerHTML = '';
+
+
+    if (
+      !product ||
+      !product.variants ||
+      colorIndex === null
+    ) {
+
+      colors.style.display =
+        'none';
+
+      return;
+
+    }
+
+
+    const colorValues = [];
+
+
+    product.variants.forEach(
+      function (variant) {
+
+        const color =
+          getVariantOption(
+            variant,
+            colorIndex
+          );
+
+
+        if (
+          color &&
+          !colorValues.includes(color)
+        ) {
+
+          colorValues.push(color);
+
+        }
+
+      }
+    );
+
+
+    if (!colorValues.length) {
+
+      colors.style.display =
+        'none';
+
+      return;
+
+    }
+
+
+    colors.style.display =
+      'grid';
+
+
+    colorValues.forEach(
+      function (color) {
+
+        const button =
+          document.createElement(
+            'button'
+          );
+
+
+        button.type = 'button';
+
+        button.className =
+          'product-popup__color-button';
+
+        button.dataset.color =
+          color;
+
+        button.textContent =
+          color;
+
+        button.setAttribute(
+          'aria-pressed',
+          'false'
+        );
+
+
+        button.addEventListener(
+          'click',
+          function () {
+
+            selectColor(color);
+
+          }
+        );
+
+
+        colors.appendChild(
+          button
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =======================================================
+     SELECT COLOR
+     ======================================================= */
+
+  function selectColor(color) {
+
+    selectedOptions.color =
+      color;
+
+
+    colors
+      .querySelectorAll(
+        '.product-popup__color-button'
+      )
+      .forEach(
+        function (button) {
+
+          const selected =
+            button.dataset.color === color;
+
+
+          button.classList.toggle(
+            'is-selected',
+            selected
+          );
+
+
+          button.setAttribute(
+            'aria-pressed',
+            String(selected)
+          );
+
+        }
+      );
+
+
+    hideError();
+
+
+    /*
+     * Rebuild sizes according
+     * to selected color.
+     */
+
+    updateAvailableSizes();
+
+  }
+
+
+  /* =======================================================
+     SIZES
+     ======================================================= */
+
+  function renderSizes(
+    product,
+    sizeIndex
+  ) {
+
+    sizeList.innerHTML = '';
+
+
+    sizeLabel.textContent =
+      'Choose your size';
+
+    sizeLabel.classList.add(
+      'is-placeholder'
+    );
+
+
+    closeSizeDropdown();
+
+
+    if (
+      !product ||
+      !product.variants ||
+      sizeIndex === null
+    ) {
+
+      return;
+
+    }
+
+
+    const sizes = [];
+
+
+    product.variants.forEach(
+      function (variant) {
+
+        const size =
+          getVariantOption(
+            variant,
+            sizeIndex
+          );
+
+
+        if (
+          size &&
+          !sizes.includes(size)
+        ) {
+
+          sizes.push(size);
+
+        }
+
+      }
+    );
+
+
+    sizes.forEach(
+      function (size) {
+
+        createSizeOption(size);
+
+      }
+    );
+
+  }
+
+
+  /* =======================================================
+     AVAILABLE SIZES
+     ======================================================= */
+
+  function updateAvailableSizes() {
+
+    if (!currentProduct) return;
+
+
+    const indexes =
+      getOptionIndexes(
+        currentProduct
+      );
+
+
+    if (
+      indexes.size === null
+    ) {
+
+      return;
+
+    }
+
+
+    const previousSize =
+      selectedOptions.size;
+
+
+    sizeList.innerHTML = '';
+
+
+    const availableSizes = [];
+
+
+    currentProduct.variants.forEach(
+      function (variant) {
+
+        const color =
+          getVariantOption(
+            variant,
+            indexes.color
+          );
+
+
+        const size =
+          getVariantOption(
+            variant,
+            indexes.size
+          );
+
+
+        if (!size) return;
+
+
+        if (
+          selectedOptions.color &&
+          color !== selectedOptions.color
+        ) {
+
+          return;
+
+        }
+
+
+        if (
+          !availableSizes.includes(size)
+        ) {
+
+          availableSizes.push(size);
+
+        }
+
+      }
+    );
+
+
+    availableSizes.forEach(
+      function (size) {
+
+        createSizeOption(size);
+
+      }
+    );
+
+
+    if (
+      previousSize &&
+      availableSizes.includes(previousSize)
+    ) {
+
+      selectSize(previousSize);
+
+    } else {
+
+      selectedOptions.size = null;
+
+      sizeLabel.textContent =
+        'Choose your size';
+
+      sizeLabel.classList.add(
+        'is-placeholder'
+      );
+
+    }
+
+  }
+
+
+  /* =======================================================
+     CREATE SIZE OPTION
+     ======================================================= */
+
+  function createSizeOption(size) {
+
+    const item =
+      document.createElement('li');
+
+
+    item.setAttribute(
+      'role',
+      'option'
+    );
+
+
+    item.setAttribute(
+      'tabindex',
+      '0'
+    );
+
+
+    item.setAttribute(
+      'aria-selected',
+      'false'
+    );
+
+
+    item.dataset.value =
+      size;
+
+
+    item.textContent =
+      size;
+
+
+    item.addEventListener(
+      'click',
+      function () {
+
+        selectSize(size);
+
+      }
+    );
+
+
+    item.addEventListener(
+      'keydown',
+      function (event) {
+
+        if (
+          event.key === 'Enter' ||
+          event.key === ' '
+        ) {
+
+          event.preventDefault();
+
+          selectSize(size);
+
+        }
+
+      }
+    );
+
+
+    sizeList.appendChild(item);
+
+  }
+
+
+  /* =======================================================
+     SELECT SIZE
+     ======================================================= */
+
+  function selectSize(size) {
+
+    selectedOptions.size =
+      size;
+
+
+    sizeLabel.textContent =
+      size;
+
+
+    sizeLabel.classList.remove(
+      'is-placeholder'
+    );
+
+
+    sizeList
+      .querySelectorAll('li')
+      .forEach(
+        function (item) {
+
+          const selected =
+            item.dataset.value === size;
+
+
+          item.classList.toggle(
+            'is-active',
+            selected
+          );
+
+
+          item.setAttribute(
+            'aria-selected',
+            String(selected)
+          );
+
+        }
+      );
+
+
+    closeSizeDropdown();
+
+    hideError();
+
+  }
+
+
+  /* =======================================================
+     SIZE DROPDOWN
+     ======================================================= */
+
+  function toggleSizeDropdown() {
+
+    const open =
+      sizeTrigger.getAttribute(
+        'aria-expanded'
+      ) === 'true';
+
+
+    if (open) {
+
+      closeSizeDropdown();
+
+    } else {
+
+      openSizeDropdown();
+
+    }
+
+  }
+
+
+  function openSizeDropdown() {
+
+    sizeTrigger.setAttribute(
+      'aria-expanded',
+      'true'
+    );
+
+
+    sizeList.hidden = false;
+
+  }
+
+
+  function closeSizeDropdown() {
+
+    sizeTrigger.setAttribute(
+      'aria-expanded',
+      'false'
+    );
+
+
+    sizeList.hidden = true;
+
+  }
+
+
+  /* =======================================================
+     FIND VARIANT
+     ======================================================= */
+
+  function findSelectedVariant() {
+
+    if (
+      !currentProduct ||
+      !currentProduct.variants
+    ) {
+
+      return null;
+
+    }
+
+
+    const indexes =
+      getOptionIndexes(
+        currentProduct
+      );
+
+
+    return currentProduct.variants.find(
+      function (variant) {
+
+        const color =
+          getVariantOption(
+            variant,
+            indexes.color
+          );
+
+
+        const size =
+          getVariantOption(
+            variant,
+            indexes.size
+          );
+
+
+        const colorMatch =
+          indexes.color === null ||
+          !selectedOptions.color ||
+          color === selectedOptions.color;
+
+
+        const sizeMatch =
+          indexes.size === null ||
+          !selectedOptions.size ||
+          size === selectedOptions.size;
+
+
+        return (
+          colorMatch &&
+          sizeMatch
+        );
+
+      }
+    ) || null;
+
+  }
+
+
+  /* =======================================================
+     VALIDATE
+     ======================================================= */
+
+  function validateSelection() {
+
+    if (!currentProduct) {
+
+      showError(
+        'Unable to load product.'
+      );
+
+      return false;
+
+    }
+
+
+    const indexes =
+      getOptionIndexes(
+        currentProduct
+      );
+
+
+    if (
+      indexes.color !== null &&
+      colors.style.display !== 'none' &&
+      !selectedOptions.color
+    ) {
+
+      showError(
+        'Please select a color.'
+      );
+
+      return false;
+
+    }
+
+
+    if (
+      indexes.size !== null &&
+      sizeList.children.length > 0 &&
+      !selectedOptions.size
+    ) {
+
+      showError(
+        'Please select a size.'
+      );
+
+      return false;
+
+    }
+
+
+    return true;
+
+  }
+
+
+  /* =======================================================
+     ERROR
+     ======================================================= */
+
+  function showError(message) {
+
+    errorMessage.textContent =
+      message;
+
+    errorMessage.hidden =
+      false;
+
+  }
+
+
+  function hideError() {
+
+    errorMessage.textContent =
+      '';
+
+    errorMessage.hidden =
+      true;
+
+  }
+
+
+  /* =======================================================
+     ADD TO CART
+     ======================================================= */
+
+  async function addToCart() {
+
+    if (!validateSelection()) {
+      return;
+    }
+
+
+    const variant =
+      findSelectedVariant();
+
+
+    if (!variant) {
+
+      showError(
+        'This combination is unavailable.'
+      );
+
+      return;
+
+    }
+
+
+    if (
+      variant.available === false
+    ) {
+
+      showError(
+        'This product is currently unavailable.'
+      );
+
+      return;
+
+    }
+
+
+    addButton.classList.add(
+      'is-loading'
+    );
+
+    addButton.disabled = true;
+
+
+    try {
+
+      const response =
+        await fetch(
+          '/cart/add.js',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+              'Accept':
+                'application/json'
+            },
+
+            body: JSON.stringify({
+              items: [
+                {
+                  id: variant.id,
+                  quantity: 1
+                }
+              ]
+            })
+          }
+        );
+
+
+      if (!response.ok) {
+
+        const data =
+          await response
+            .json()
+            .catch(
+              function () {
+                return null;
+              }
+            );
+
+
+        throw new Error(
+          data &&
+          data.description
+            ? data.description
+            : 'Unable to add product.'
+        );
+
+      }
+
+
+      await response.json();
+
+
+      /*
+       * SUCCESS
+       */
+
+      addButton.classList.remove(
+        'is-loading'
+      );
+
+
+      addButton.classList.add(
+        'is-success'
+      );
+
+
+      addButton.querySelector(
+        '.product-popup__add-text'
+      ).textContent =
+        'ADDED TO CART';
+
+
+      /*
+       * Notify theme
+       */
+
+      document.dispatchEvent(
+        new CustomEvent(
+          'product:added-to-cart',
+          {
+            detail: {
+              product:
+                currentProduct,
+
+              variant:
+                variant
+            }
+          }
+        )
+      );
+
+
+      document.dispatchEvent(
+        new CustomEvent(
+          'cart:refresh'
+        )
+      );
+
+
+      setTimeout(
+        function () {
+
+          closePopup();
+
+        },
+        650
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        'Add to cart error:',
+        error
+      );
+
+
+      addButton.classList.remove(
+        'is-loading'
+      );
+
+
+      addButton.disabled =
+        false;
+
+
+      showError(
+        error.message ||
+        'Unable to add this product to cart.'
+      );
+
+    }
+
+  }
+
+
+  /* =======================================================
+     RESET
+     ======================================================= */
+
+  function resetPopup() {
+
+    currentProduct = null;
+
+
+    selectedOptions = {
+      color: null,
+      size: null
+    };
+
+
+    image.removeAttribute('src');
+
+    image.alt = '';
+
+
+    title.textContent = '';
+
+    price.textContent = '';
+
+    description.textContent = '';
+
+
+    colors.innerHTML = '';
+
+    colors.style.display = 'grid';
+
+
+    sizeList.innerHTML = '';
+
+    closeSizeDropdown();
+
+
+    sizeLabel.textContent =
+      'Choose your size';
+
+    sizeLabel.classList.add(
+      'is-placeholder'
+    );
+
+
+    addButton.disabled =
+      false;
+
+
+    addButton.classList.remove(
+      'is-loading',
+      'is-success'
+    );
+
+
+    addButton.querySelector(
+      '.product-popup__add-text'
+    ).textContent =
+      'ADD TO CART';
+
+
+    hideError();
+
+  }
+
+
+  /* =======================================================
+     CLOSE
+     ======================================================= */
+
+  function closePopup() {
+
+    closeSizeDropdown();
+
+
+    popup.hidden = true;
+
+
+    popup.setAttribute(
+      'aria-hidden',
+      'true'
+    );
+
+
+    document.body.style.overflow =
+      '';
+
+
+    if (
+      lastFocusedElement &&
+      typeof lastFocusedElement.focus ===
+        'function'
+    ) {
+
+      lastFocusedElement.focus();
+
+    }
+
+  }
+
+
+  /* =======================================================
+     DOCUMENT CLICK
+     ======================================================= */
+
+  document.addEventListener(
+    'click',
+    function (event) {
+
+
+      /* OPEN */
+
+      const openButton =
+        event.target.closest(
+          '[data-open-popup]'
+        );
+
+
+      if (openButton) {
+
+        event.preventDefault();
+
+
+        openProductPopup(
+          openButton.dataset.productHandle,
+          openButton
+        );
+
+
+        return;
+
+      }
+
+
+      /* CLOSE */
+
+      const closeButton =
+        event.target.closest(
+          '[data-close-popup]'
+        );
+
+
+      if (closeButton) {
+
+        event.preventDefault();
+
+        closePopup();
+
+        return;
+
+      }
+
+
+      /* SIZE */
+
+      const sizeButton =
+        event.target.closest(
+          '.product-popup__size-trigger'
+        );
+
+
+      if (sizeButton) {
+
+        event.preventDefault();
+
+        toggleSizeDropdown();
+
+        return;
+
+      }
+
+
+      /* OUTSIDE SIZE */
+
+      if (
+        sizeDropdown &&
+        !sizeDropdown.contains(
+          event.target
+        )
+      ) {
+
+        closeSizeDropdown();
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     ADD TO CART
+     ======================================================= */
+
+  addButton.addEventListener(
+    'click',
+    function () {
+
+      addToCart();
+
+    }
+  );
+
+
+  /* =======================================================
+     ESCAPE
+     ======================================================= */
+
+  document.addEventListener(
+    'keydown',
+    function (event) {
+
+      if (
+        event.key === 'Escape' &&
+        !popup.hidden
+      ) {
+
+        closePopup();
+
+      }
+
+    }
+  );
+
+
 })();
 </script>
 
+
 {% schema %}
+
 {
-  "name": "Product Grid",
+  "name": "Product Grid Popup",
+
+  "tag": "section",
+
+  "class": "product-grid-popup-section",
+
   "max_blocks": 6,
+
+  "settings": [],
+
   "blocks": [
     {
       "type": "product",
+
       "name": "Product",
+
       "settings": [
-        { "type": "product", "id": "product", "label": "Select product" },
-        { "type": "range", "id": "pin_top", "label": "Pin vertical position (%)", "min": 0, "max": 100, "step": 1, "default": 85 },
-        { "type": "range", "id": "pin_left", "label": "Pin horizontal position (%)", "min": 0, "max": 100, "step": 1, "default": 85 }
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select product"
+        },
+        {
+          "type": "range",
+          "id": "pin_top",
+          "label": "Pin vertical position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "pin_left",
+          "label": "Pin horizontal position (%)",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 65
+        }
       ]
     }
   ],
+
   "presets": [
     {
-      "name": "Product Grid",
+      "name": "Product Grid Popup",
+
       "blocks": [
-        { "type": "product" }, { "type": "product" }, { "type": "product" },
-        { "type": "product" }, { "type": "product" }, { "type": "product" }
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
       ]
     }
   ]
 }
+
 {% endschema %}
