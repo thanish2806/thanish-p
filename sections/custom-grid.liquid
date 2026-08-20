@@ -1,707 +1,198 @@
-<div class="tisso-lookbook-wrapper" id="tisso-lookbook">
-  <div class="tisso-lookbook-container">
-    <h2 class="tisso-lookbook__title">{{ section.settings.title | default: 'Tisso vison in the wild' }}</h2>
-
-    <div class="tisso-lookbook__grid">
-      {% assign default_images = "https://cdn.shopify.com/s/files/1/0873/7842/8199/files/black-bag-over-the-shoulder_925x_4cae5708-5e9e-4e7e-96ec-9649f0c20cd8.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/man-adjusts-blue-tuxedo-bowtie_925x_55a49e12-d54b-488e-b7a0-ea4c201eb01f.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/red-plaid-shirt_925x_70e9e5a8-8fc5-4d60-9a9a-cc2e0dd57cc9.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/leather-jacket-and-tea_925x_2490cde1-7e61-4151-9a65-de8a763bc701.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/casual-fashion-woman_925x_56b56608-f207-45c1-b677-bb5aa26c1c7a.jpg|https://cdn.shopify.com/s/files/1/0873/7842/8199/files/young-hip-woman-at-carnival_925x_4a1c7841-27c9-4aa1-98ef-f5d77c5cd675.jpg" | split: "|" %}
-      {% assign default_titles = "Black Leather Bag|Tailored Jacket|Chequered Red Shirt|Classic Leather Jacket|Classic Varsity Top|Silk Summer Top" | split: "|" %}
-      {% assign default_prices = "30,00€|980,00€|50,00€|80,00€|60,00€|70,00€" | split: "|" %}
-      {% assign default_descriptions = "Women's black leather bag, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.|This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.|Classic mens plaid flannel shirt with long sleeves, in chequered style, with two chest pockets.|Womans zipped leather jacket. Adjustable belt for a comfortable fit, complete with shoulder pads.|Womens casual varsity top, This grey and black buttoned top is a sport-inspired piece complete with an embroidered letter.|Silk womens top with short sleeves and number pattern. Lightweight and comfortable." | split: "|" %}
-      {% assign default_color1 = "Black|Blue|Red|Black|Grey|Teal" | split: "|" %}
-      {% assign default_color2 = "White|Black|Black|Brown|Navy|Orange" | split: "|" %}
-      {% assign default_tops = "64|63.5|27|39|41|67.5" | split: "|" %}
-      {% assign default_lefts = "69|81|71|76|51|79" | split: "|" %}
-
-      {% if section.blocks.size > 0 %}
-        {% for block in section.blocks %}
-          {% assign product = block.settings.product %}
-          {% assign idx = forloop.index0 %}
-          {% assign img_url = default_images[idx] %}
-          {% assign title = default_titles[idx] %}
-          {% assign price = default_prices[idx] %}
-          {% assign desc = default_descriptions[idx] %}
-          {% assign c1 = default_color1[idx] %}
-          {% assign c2 = default_color2[idx] %}
-          {% assign top_pos = default_tops[idx] %}
-          {% assign left_pos = default_lefts[idx] %}
-
-          {% if block.settings.custom_top != blank %}
-            {% assign top_pos = block.settings.custom_top %}
-          {% endif %}
-          {% if block.settings.custom_left != blank %}
-            {% assign left_pos = block.settings.custom_left %}
-          {% endif %}
-
-          {% if product != blank %}
-            {% if product.featured_image != blank %}
-              {% assign img_url = product.featured_image | image_url: width: 800 %}
-            {% endif %}
-            {% assign title = product.title %}
-            {% assign price = product.price | money %}
-            {% assign desc = product.description | strip_html | truncate: 140 %}
-          {% endif %}
-
-          <div class="tisso-card" {{ block.shopify_attributes }}>
-            <div class="tisso-card__media">
-              <img src="{{ img_url }}" alt="{{ title }}" loading="lazy" class="tisso-card__img">
-
-              <button
-                type="button"
-                class="tisso-pin"
-                style="top: {{ top_pos }}%; left: {{ left_pos }}%;"
-                aria-label="View {{ title }}"
-                data-open-popup
-                data-title="{{ title | escape }}"
-                data-price="{{ price | escape }}"
-                data-desc="{{ desc | escape }}"
-                data-image="{{ img_url | escape }}"
-                data-color1="{{ c1 | escape }}"
-                data-color2="{{ c2 | escape }}"
-                data-product-id="{{ product.id | default: '' }}"
-                data-variant-id="{{ product.selected_or_first_available_variant.id | default: '' }}"
-                onclick="window.openTissoModal(this)"
-              >
-                <span class="tisso-pin__plus">+</span>
-              </button>
-
-              {% if idx == 3 %}
-                <span class="tisso-pin-dot" style="top: 42%; left: 28%;"></span>
-                <span class="tisso-pin-dot" style="top: 41%; left: 85%;"></span>
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        {% for i in (0..5) %}
-          <div class="tisso-card">
-            <div class="tisso-card__media">
-              <img src="{{ default_images[i] }}" alt="{{ default_titles[i] }}" loading="lazy" class="tisso-card__img">
-              <button
-                type="button"
-                class="tisso-pin"
-                style="top: {{ default_tops[i] }}%; left: {{ default_lefts[i] }}%;"
-                aria-label="View {{ default_titles[i] }}"
-                data-open-popup
-                data-title="{{ default_titles[i] | escape }}"
-                data-price="{{ default_prices[i] | escape }}"
-                data-desc="{{ default_descriptions[i] | escape }}"
-                data-image="{{ default_images[i] | escape }}"
-                data-color1="{{ default_color1[i] | escape }}"
-                data-color2="{{ default_color2[i] | escape }}"
-                onclick="window.openTissoModal(this)"
-              >
-                <span class="tisso-pin__plus">+</span>
-              </button>
-
-              {% if i == 3 %}
-                <span class="tisso-pin-dot" style="top: 42%; left: 28%;"></span>
-                <span class="tisso-pin-dot" style="top: 41%; left: 85%;"></span>
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
-      {% endif %}
+<div class="product-grid">
+  {% for block in section.blocks %}
+    {% assign product = block.settings.product %}
+    <div class="product-grid__item" {{ block.shopify_attributes }}>
+      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" loading="lazy">
+      <button
+        class="product-grid__plus"
+        style="top: {{ block.settings.pin_top }}%; left: {{ block.settings.pin_left }}%;"
+        data-open-popup
+        data-product-handle="{{ product.handle }}"
+      >+</button>
     </div>
-  </div>
+  {% endfor %}
 </div>
 
-<!-- Lookbook Product Quick View Modal -->
-<div class="lookbook-popup" id="lookbook-popup" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="lookbook-popup__backdrop" data-close-popup onclick="window.closeTissoModal()"></div>
-  <div class="lookbook-popup__dialog">
-    <button type="button" class="lookbook-popup__close" data-close-popup onclick="window.closeTissoModal()" aria-label="Close modal">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="1" y1="1" x2="13" y2="13"></line>
-        <line x1="13" y1="1" x2="1" y2="13"></line>
-      </svg>
-    </button>
+<div class="product-popup" id="product-popup" hidden>
+  <div class="product-popup__overlay" data-close-popup></div>
+  <div class="product-popup__content">
+    <button class="product-popup__close" data-close-popup>×</button>
+    <img class="product-popup__image" src="" alt="">
+    <div class="product-popup__info">
+      <h2 class="product-popup__title"></h2>
+      <p class="product-popup__price"></p>
+      <p class="product-popup__desc"></p>
 
-    <div class="lookbook-popup__header">
-      <div class="lookbook-popup__thumb">
-        <img id="popup-image" src="" alt="" class="lookbook-popup__img">
-      </div>
-      <div class="lookbook-popup__info">
-        <h3 id="popup-title" class="lookbook-popup__title">Tailored Jacket</h3>
-        <div id="popup-price" class="lookbook-popup__price">980,00€</div>
-        <p id="popup-desc" class="lookbook-popup__desc">This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.</p>
-      </div>
-    </div>
+      <div class="product-popup__colors"></div>
 
-    <div class="lookbook-popup__form">
-      <div class="lookbook-popup__field">
-        <label class="lookbook-popup__label">Color</label>
-        <div class="lookbook-popup__color-bar" id="popup-color-bar">
-          <button type="button" class="lookbook-color-tab active" id="color-tab-1" onclick="window.selectTissoColor(this)">
-            <span class="tab-text" id="color-text-1">Blue</span>
-          </button>
-          <button type="button" class="lookbook-color-tab" id="color-tab-2" onclick="window.selectTissoColor(this)">
-            <span class="tab-text" id="color-text-2">Black</span>
-          </button>
-        </div>
-      </div>
+      <label class="product-popup__size-label">Size</label>
+      <select class="product-popup__size"></select>
 
-      <div class="lookbook-popup__field">
-        <label class="lookbook-popup__label" for="popup-size">Size</label>
-        <div class="lookbook-popup__select-wrap">
-          <select id="popup-size" class="lookbook-popup__select">
-            <option value="" selected>Choose your size</option>
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-          </select>
-          <div class="lookbook-popup__select-arrow">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <button type="button" class="lookbook-popup__submit-btn" id="popup-submit-btn" onclick="window.submitTissoCart()">
-        <span class="btn-text">ADD TO CART</span>
-        <svg class="arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
+      <button class="product-popup__add-to-cart">
+        ADD TO CART <span class="arrow">→</span>
       </button>
-      <div class="lookbook-popup__toast" id="popup-toast">Added to bag!</div>
     </div>
   </div>
 </div>
 
-<style>
-.tisso-lookbook-wrapper {
-  width: 100%;
-  padding: 60px 0 80px 0;
-  background-color: #ffffff;
-  box-sizing: border-box;
-  position: relative;
-}
-
-.tisso-lookbook-container {
-  width: 100%;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 0 48px;
-  box-sizing: border-box;
-}
-
-.tisso-lookbook__title {
-  font-family: 'Playfair Display', Georgia, Cambria, 'Times New Roman', serif;
-  font-size: 2.35rem;
-  font-weight: 400;
-  color: #111111;
-  letter-spacing: -0.015em;
-  margin: 0 0 28px 0;
-  text-align: left;
-}
-
-.tisso-lookbook__grid {
+{% stylesheet %}
+.product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 20px;
-  row-gap: 20px;
+  gap: 4px;
 }
-
-.tisso-card {
-  position: relative;
-  width: 100%;
-}
-
-.tisso-card__media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #f4f4f4;
-  overflow: hidden;
-}
-
-.tisso-card__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
-}
-
-.tisso-card:hover .tisso-card__img {
-  transform: scale(1.02);
-}
-
-/* Hotspot Pin */
-.tisso-pin {
+.product-grid__item { position: relative; }
+.product-grid__item img { width: 100%; display: block; }
+.product-grid__plus {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 24px;
-  height: 24px;
+  width: 32px; height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  z-index: 25;
-  transition: all 0.2s ease;
-  color: #000000;
-  outline: none;
-  pointer-events: auto;
-}
-
-.tisso-pin:hover {
-  background: #ffffff;
-  transform: translate(-50%, -50%) scale(1.2);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.tisso-pin__plus {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1;
-  display: block;
-  margin-top: -1px;
-}
-
-.tisso-pin-dot {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* Modal Popup Styles */
-.lookbook-popup {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 9999999 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-.lookbook-popup.is-open {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
-}
-
-.lookbook-popup__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  cursor: pointer;
-}
-
-.lookbook-popup__dialog {
-  position: relative;
-  background: #ffffff;
-  width: 90%;
-  max-width: 340px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-  z-index: 2;
-  padding: 22px 20px 20px 20px;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  transform: scale(0.96);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.lookbook-popup.is-open .lookbook-popup__dialog {
-  transform: scale(1);
-}
-
-.lookbook-popup__close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
+  background: #fff;
   border: none;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 18px;
   cursor: pointer;
-  z-index: 10;
-  color: #111111;
-  padding: 0;
-}
-
-.lookbook-popup__close:hover {
-  opacity: 0.7;
-}
-
-/* Header with Thumbnail + Info */
-.lookbook-popup__header {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  margin-bottom: 14px;
-}
-
-.lookbook-popup__thumb {
-  width: 95px;
-  height: 95px;
-  flex-shrink: 0;
-  background: #f7f7f7;
-  overflow: hidden;
-}
-
-.lookbook-popup__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.lookbook-popup__info {
-  flex: 1;
-  min-width: 0;
-}
-
-.lookbook-popup__title {
-  font-size: 0.88rem;
-  font-weight: 500;
-  margin: 0 0 4px 0;
-  color: #111111;
-  line-height: 1.25;
-}
-
-.lookbook-popup__price {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #111111;
-  margin-bottom: 6px;
-}
-
-.lookbook-popup__desc {
-  font-size: 0.68rem;
-  line-height: 1.35;
-  color: #444444;
-  margin: 0;
-}
-
-/* Form Fields */
-.lookbook-popup__form {
-  display: flex;
-  flex-direction: column;
-}
-
-.lookbook-popup__field {
-  margin-bottom: 12px;
-}
-
-.lookbook-popup__label {
-  display: block;
-  font-size: 0.76rem;
-  font-weight: 400;
-  color: #222222;
-  margin-bottom: 5px;
-}
-
-/* Connected Color Tabs with left blue accent */
-.lookbook-popup__color-bar {
-  display: flex;
-  width: 100%;
-  border: 1px solid #767676;
-  box-sizing: border-box;
-  height: 36px;
-}
-
-.lookbook-color-tab {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  font-size: 0.82rem;
-  color: #111111;
-  background: #ffffff;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  text-align: left;
-  outline: none;
-}
-
-.lookbook-color-tab:not(:first-child) {
-  border-left: 1px solid #767676;
-}
-
-.lookbook-color-tab.active {
-  border-left: 3.5px solid #0033cc !important;
-  font-weight: 500;
-}
-
-.lookbook-color-tab:not(:first-child).active {
-  border-left: 3.5px solid #0033cc !important;
-}
-
-/* Select Size Box with right border partition */
-.lookbook-popup__select-wrap {
-  position: relative;
-  width: 100%;
-  border: 1px solid #767676;
-  box-sizing: border-box;
-  height: 36px;
-  display: flex;
-}
-
-.lookbook-popup__select {
-  width: 100%;
-  height: 100%;
-  border: none;
-  padding: 0 40px 0 12px;
-  font-size: 0.8rem;
-  font-family: inherit;
-  color: #222222;
-  background: transparent;
-  -webkit-appearance: none;
-  appearance: none;
-  outline: none;
-  cursor: pointer;
-}
-
-.lookbook-popup__select-arrow {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 36px;
-  border-left: 1px solid #767676;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  color: #222222;
-}
-
-/* Submit Add to Cart Button */
-.lookbook-popup__submit-btn {
-  width: 100%;
-  height: 40px;
-  background: #000000;
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  cursor: pointer;
-  margin-top: 6px;
-  transition: opacity 0.2s ease;
-}
-
-.lookbook-popup__submit-btn:hover {
-  opacity: 0.88;
-}
-
-.lookbook-popup__submit-btn .arrow-icon {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
   transition: transform 0.2s ease;
 }
+.product-grid__plus:hover { transform: translate(-50%, -50%) scale(1.1); }
 
-.lookbook-popup__submit-btn:hover .arrow-icon {
-  transform: translateX(4px);
+.product-popup { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; }
+.product-popup[hidden] { display: none; }
+.product-popup__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+.product-popup__content {
+  position: relative;
+  background: #fff;
+  display: flex;
+  gap: 32px;
+  padding: 40px;
+  max-width: 700px;
+  width: 90%;
 }
+.product-popup__image { width: 300px; height: 300px; object-fit: cover; }
+.product-popup__close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; }
+.product-popup__colors { display: flex; border: 1px solid #000; margin: 16px 0; }
+.product-popup__colors button {
+  flex: 1; padding: 14px; border: none; background: #fff; cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.product-popup__colors button.active { border-left-color: #1a4fd6; font-weight: 600; }
+.product-popup__size { width: 100%; padding: 14px; margin-bottom: 20px; }
+.product-popup__add-to-cart {
+  width: 100%; background: #000; color: #fff; padding: 16px;
+  border: none; display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; transition: opacity 0.2s ease;
+}
+.product-popup__add-to-cart:hover { opacity: 0.85; }
 
-.lookbook-popup__toast {
-  display: none;
-  margin-top: 8px;
-  padding: 6px;
-  background: #e8f5e9;
-  color: #2e7d32;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: center;
+@media screen and (max-width: 749px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .product-popup__content { flex-direction: column; padding: 24px; }
+  .product-popup__image { width: 100%; height: auto; }
 }
-
-@media (max-width: 768px) {
-  .tisso-lookbook-wrapper {
-    padding: 36px 0 50px 0;
-  }
-  .tisso-lookbook-container {
-    padding: 0 12px;
-  }
-  .tisso-lookbook__title {
-    font-size: 26px;
-    margin-bottom: 18px;
-    text-align: center;
-  }
-  .tisso-lookbook__grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    column-gap: 6px !important;
-    row-gap: 6px !important;
-  }
-  .tisso-pin {
-    width: 22px;
-    height: 22px;
-  }
-}
-</style>
+{% endstylesheet %}
 
 <script>
-window.openTissoModal = function(btn) {
-  const popup = document.getElementById('lookbook-popup');
-  if (!popup || !btn) return;
+(function () {
+  let currentProduct = null;
+  let selectedOptions = {};
 
-  const popupImg = document.getElementById('popup-image');
-  const popupTitle = document.getElementById('popup-title');
-  const popupPrice = document.getElementById('popup-price');
-  const popupDesc = document.getElementById('popup-desc');
-  const colorText1 = document.getElementById('color-text-1');
-  const colorText2 = document.getElementById('color-text-2');
-  const colorTab1 = document.getElementById('color-tab-1');
-  const colorTab2 = document.getElementById('color-tab-2');
-  const toast = document.getElementById('popup-toast');
-  const sizeSelect = document.getElementById('popup-size');
+  document.addEventListener('click', async function (e) {
+    const openBtn = e.target.closest('[data-open-popup]');
+    if (openBtn) {
+      const handle = openBtn.dataset.productHandle;
+      const res = await fetch('/products/' + handle + '.js');
+      const product = await res.json();
+      openProductPopup(product);
+    }
+    if (e.target.closest('[data-close-popup]')) {
+      document.getElementById('product-popup').hidden = true;
+    }
+  });
 
-  if (popupImg) {
-    popupImg.src = btn.getAttribute('data-image') || '';
-    popupImg.alt = btn.getAttribute('data-title') || '';
+  function openProductPopup(product) {
+    currentProduct = product;
+    selectedOptions = {};
+
+    const popup = document.getElementById('product-popup');
+    popup.querySelector('.product-popup__image').src = product.featured_image;
+    popup.querySelector('.product-popup__title').textContent = product.title;
+    popup.querySelector('.product-popup__price').textContent = (product.price / 100).toFixed(2) + '€';
+    popup.querySelector('.product-popup__desc').textContent = product.description.replace(/<[^>]*>/g, '');
+
+    const colorValues = [...new Set(product.variants.map(function (v) { return v.option1; }))];
+    const colorWrap = popup.querySelector('.product-popup__colors');
+    colorWrap.innerHTML = colorValues.map(function (c) {
+      return '<button type="button" data-color="' + c + '">' + c + '</button>';
+    }).join('');
+    colorWrap.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        colorWrap.querySelectorAll('button').forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        selectedOptions.color = b.dataset.color;
+      });
+    });
+
+    const sizeValues = [...new Set(product.variants.map(function (v) { return v.option2; }))];
+    const sizeSelect = popup.querySelector('.product-popup__size');
+    sizeSelect.innerHTML = '<option value="">Choose your size</option>' +
+      sizeValues.map(function (s) { return '<option value="' + s + '">' + s + '</option>'; }).join('');
+    sizeSelect.addEventListener('change', function () { selectedOptions.size = sizeSelect.value; });
+
+    popup.querySelector('.product-popup__add-to-cart').onclick = addToCart;
+
+    popup.hidden = false;
   }
-  if (popupTitle) popupTitle.textContent = btn.getAttribute('data-title') || 'Tailored Jacket';
-  if (popupPrice) popupPrice.textContent = btn.getAttribute('data-price') || '980,00€';
-  if (popupDesc) popupDesc.textContent = btn.getAttribute('data-desc') || '';
-  if (colorText1) colorText1.textContent = btn.getAttribute('data-color1') || 'Blue';
-  if (colorText2) colorText2.textContent = btn.getAttribute('data-color2') || 'Black';
-  if (toast) toast.style.display = 'none';
-  if (sizeSelect) sizeSelect.value = '';
 
-  if (colorTab1 && colorTab2) {
-    colorTab1.classList.add('active');
-    colorTab2.classList.remove('active');
-  }
+  async function addToCart() {
+    const variant = currentProduct.variants.find(function (v) {
+      return v.option1 === selectedOptions.color && v.option2 === selectedOptions.size;
+    });
+    if (!variant) { alert('Select color and size'); return; }
 
-  window.currentTissoVariantId = btn.getAttribute('data-variant-id') || null;
+    const items = [{ id: variant.id, quantity: 1 }];
 
-  popup.classList.add('is-open');
-  popup.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-};
+    if (selectedOptions.color === 'Black' && selectedOptions.size === 'Medium') {
+      const jacketRes = await fetch('/products/soft-winter-jacket.js');
+      if (jacketRes.ok) {
+        const jacket = await jacketRes.json();
+        items.push({ id: jacket.variants[0].id, quantity: 1 });
+      }
+    }
 
-window.closeTissoModal = function() {
-  const popup = document.getElementById('lookbook-popup');
-  if (!popup) return;
-  popup.classList.remove('is-open');
-  popup.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-};
-
-window.selectTissoColor = function(tab) {
-  const parent = tab.closest('.lookbook-popup__color-bar');
-  if (!parent) return;
-  parent.querySelectorAll('.lookbook-color-tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-};
-
-window.submitTissoCart = function() {
-  const submitBtn = document.getElementById('popup-submit-btn');
-  const toast = document.getElementById('popup-toast');
-  const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
-  const originalText = btnText ? btnText.textContent : 'ADD TO CART';
-
-  if (btnText) btnText.textContent = 'ADDING...';
-
-  if (window.currentTissoVariantId) {
-    fetch('/cart/add.js', {
+    await fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: window.currentTissoVariantId, quantity: 1 })
-    })
-    .then(r => r.json())
-    .then(() => {
-      if (btnText) btnText.textContent = 'ADDED!';
-      if (toast) toast.style.display = 'block';
-      setTimeout(() => {
-        if (btnText) btnText.textContent = originalText;
-        window.closeTissoModal();
-      }, 1000);
-    })
-    .catch(() => {
-      if (btnText) btnText.textContent = 'ADDED!';
-      if (toast) toast.style.display = 'block';
-      setTimeout(() => {
-        if (btnText) btnText.textContent = originalText;
-        window.closeTissoModal();
-      }, 1000);
+      body: JSON.stringify({ items: items })
     });
-  } else {
-    setTimeout(() => {
-      if (btnText) btnText.textContent = 'ADDED!';
-      if (toast) toast.style.display = 'block';
-      setTimeout(() => {
-        if (btnText) btnText.textContent = originalText;
-        window.closeTissoModal();
-      }, 1000);
-    }, 400);
-  }
-};
 
-// Global fallback listener so click is guaranteed even if dynamic
-document.addEventListener('click', function(e) {
-  const pin = e.target.closest('[data-open-popup]');
-  if (pin) {
-    e.preventDefault();
-    e.stopPropagation();
-    window.openTissoModal(pin);
+    document.getElementById('product-popup').hidden = true;
+    alert('Added to cart!');
   }
-});
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    window.closeTissoModal();
-  }
-});
+})();
 </script>
 
 {% schema %}
 {
-  "name": "Lookbook Hotspot Grid",
-  "settings": [
-    { "type": "text", "id": "title", "label": "Section Title", "default": "Tisso vison in the wild" }
-  ],
+  "name": "Product Grid",
   "max_blocks": 6,
   "blocks": [
     {
-      "type": "product_spot",
-      "name": "Product Hotspot Card",
+      "type": "product",
+      "name": "Product",
       "settings": [
-        { "type": "product", "id": "product", "label": "Product" },
-        { "type": "range", "id": "custom_top", "label": "Hotspot Top Position (%)", "min": 5, "max": 95, "step": 1, "default": 50 },
-        { "type": "range", "id": "custom_left", "label": "Hotspot Left Position (%)", "min": 5, "max": 95, "step": 1, "default": 50 }
+        { "type": "product", "id": "product", "label": "Select product" },
+        { "type": "range", "id": "pin_top", "label": "Pin vertical position (%)", "min": 0, "max": 100, "step": 1, "default": 85 },
+        { "type": "range", "id": "pin_left", "label": "Pin horizontal position (%)", "min": 0, "max": 100, "step": 1, "default": 85 }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Lookbook Hotspot Grid",
+      "name": "Product Grid",
       "blocks": [
-        { "type": "product_spot" },
-        { "type": "product_spot" },
-        { "type": "product_spot" },
-        { "type": "product_spot" },
-        { "type": "product_spot" },
-        { "type": "product_spot" }
+        { "type": "product" }, { "type": "product" }, { "type": "product" },
+        { "type": "product" }, { "type": "product" }, { "type": "product" }
       ]
     }
   ]

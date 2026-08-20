@@ -103,14 +103,12 @@
   color: #000000 !important;
   font-weight: 600;
   font-size: 14px;
-  font-family: inherit;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   overflow: hidden;
   z-index: 1;
   border: 1px solid #f5e13c;
-  outline: none;
   cursor: pointer;
   transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.35s ease;
 }
@@ -164,12 +162,13 @@
 }
 
 .gift-banner__hero-inner {
-  max-width: 480px;
+  padding: 380px 150px 30px 30px;
+  max-width: 720px;
   z-index: 2;
 }
 
 .gift-banner__heading { 
-  font-size: 48px; 
+  font-size: 70px; 
   font-weight: 700;
   line-height: 1.1;
   margin: 0 0 16px 0; 
@@ -206,10 +205,6 @@
   width: fit-content;
   font-weight: 600;
   font-size: 14px;
-  font-family: inherit;
-  border: none;
-  outline: none;
-  cursor: pointer;
   text-decoration: none;
   transition: background-color 0.2s ease;
 }
@@ -319,6 +314,7 @@
   .gift-banner__hero-inner {
     max-width: 100%;
     margin-bottom: 20px;
+    padding: 0;
   }
 
   .gift-banner__heading {
@@ -412,7 +408,6 @@
         </svg>
       </span>
     </button>
-
     <div class="gift-banner__brand">
       {% if section.settings.custom_logo != blank %}
         <img
@@ -425,10 +420,8 @@
         <span>{{ section.settings.brand_name | default: 'TISSO VISON' }}</span>
       {% endif %}
     </div>
-
     <!-- Spacer for symmetrical balance on mobile -->
     <div class="gift-banner__brand-spacer" aria-hidden="true"></div>
-
     <!-- Topbar Content: Announcement & Button (Dropdown on mobile) -->
     <div class="gift-banner__topbar-content" id="giftBannerTopbarContent">
       <span class="gift-banner__topbar-text">{{ section.settings.topbar_text | default: 'Find the ideal gift for your loved ones.' }}</span>
@@ -438,14 +431,12 @@
       </button>
     </div>
   </div>
-
   {% liquid
     assign hero_bg_url = 'hero-bg.png' | asset_url
     if section.settings.hero_bg != blank
       assign hero_bg_url = section.settings.hero_bg | image_url: width: 1600
     endif
   %}
-
   <!-- Hero Section -->
   <div class="gift-banner__hero" style="background-image: url('{{ hero_bg_url }}');">
     <div class="gift-banner__hero-inner">
@@ -464,7 +455,6 @@
         </button>
       </div>
     </div>
-
     <!-- Mobile Artwork & SHOP NOW Button Container -->
     <div class="gift-banner__hero-media">
       <img src="{{ hero_bg_url }}" alt="{{ section.settings.heading | default: 'The Gift Guide' }}" class="gift-banner__hero-img" loading="eager">
@@ -476,11 +466,9 @@
       </div>
     </div>
   </div>
-
   <!-- Bottom Strip Banner -->
   <div class="gift-banner__strip">{{ section.settings.strip_text | default: 'SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR' }}</div>
 </div>
-
 <script>
 window.toggleGiftBannerMenu = function(btn, event) {
   if (event) {
@@ -496,7 +484,6 @@ window.toggleGiftBannerMenu = function(btn, event) {
     }
   }
 };
-
 // Global delegation listener for mobile menu toggle only
 document.addEventListener('click', function(e) {
   const toggle = e.target.closest('#giftBannerToggle, .gift-banner__toggle-btn');
@@ -505,7 +492,6 @@ document.addEventListener('click', function(e) {
   }
 });
 </script>
-
 {% schema %}
 {
   "name": "Gift Banner",
